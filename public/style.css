@@ -259,6 +259,64 @@ h1 span {
   }
 }
 
+/* Collapsible top-level section (Store & Auth + API Calls) */
+.section-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 14px 18px;
+  background: #f2f1ff;
+  border: 1px solid #e0deff;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 700;
+  color: #4a42d4;
+  text-align: left;
+}
+
+.section-toggle:hover {
+  background: #eae8ff;
+}
+
+.section-chevron {
+  font-size: 12px;
+  transition: transform 0.2s;
+}
+
+.section-toggle.open .section-chevron {
+  transform: rotate(180deg);
+}
+
+.section-body {
+  display: none;
+  margin-top: 16px;
+}
+
+.section-body.open {
+  display: block;
+}
+
+/* Free-text notes area */
+.notes-textarea {
+  width: 100%;
+  min-height: 180px;
+  font-family: monospace;
+  font-size: 13px;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background: #fafafa;
+  color: #222;
+  resize: vertical;
+}
+
+.notes-textarea:focus {
+  outline: none;
+  border-color: #6C63FF;
+}
+
 /* Store & Auth fields */
 .field-row {
   margin-bottom: 14px;

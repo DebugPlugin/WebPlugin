@@ -38,27 +38,39 @@
       </div>
 
       <div class="page-col">
-        <div class="card">
-          <h2>Store &amp; Auth</h2>
-          <p class="hint">Enter the target store and its credentials. Nothing is saved — you'll re-enter it after a page reload.</p>
-          <div class="field-row">
-            <label for="mg-store-url">Store URL</label>
-            <input id="mg-store-url" type="text" placeholder="mystore.com">
+        <button class="section-toggle open" id="mg-section-a-toggle" type="button" data-target="mg-section-a-body">
+          <span>Store &amp; API tools</span>
+          <span class="section-chevron">▼</span>
+        </button>
+        <div class="section-body open" id="mg-section-a-body">
+          <div class="card">
+            <h2>Store &amp; Auth</h2>
+            <p class="hint">Enter the target store and its credentials. Nothing is saved — you'll re-enter it after a page reload.</p>
+            <div class="field-row">
+              <label for="mg-store-url">Store URL</label>
+              <input id="mg-store-url" type="text" placeholder="mystore.com">
+            </div>
+            <div class="field-row">
+              <label for="mg-store-code">Store code</label>
+              <input id="mg-store-code" type="text" placeholder="default" value="default">
+            </div>
+            <div class="field-row">
+              <label for="mg-bearer-token">Bearer Token</label>
+              <input id="mg-bearer-token" type="text" placeholder="paste manually">
+            </div>
           </div>
-          <div class="field-row">
-            <label for="mg-store-code">Store code</label>
-            <input id="mg-store-code" type="text" placeholder="default" value="default">
-          </div>
-          <div class="field-row">
-            <label for="mg-bearer-token">Bearer Token</label>
-            <input id="mg-bearer-token" type="text" placeholder="paste manually">
+
+          <div class="card">
+            <h2>API Calls</h2>
+            <p class="hint">Expand a section and click "Call endpoint" — requests run through the server proxy to avoid CORS.</p>
+            <div id="mg-api-endpoints"></div>
           </div>
         </div>
 
         <div class="card">
-          <h2>API Calls</h2>
-          <p class="hint">Expand a section and click "Call endpoint" — requests run through the server proxy to avoid CORS.</p>
-          <div id="mg-api-endpoints"></div>
+          <h2>Notes</h2>
+          <p class="hint">Free text — saved automatically in this browser.</p>
+          <textarea id="mg-notes" class="notes-textarea" data-storage-key="mg-notes" placeholder="Write anything here..."></textarea>
         </div>
       </div>
     </div>
@@ -68,5 +80,6 @@
   <script src="/platform.js"></script>
   <script src="/api-tools.js"></script>
   <script src="/mg-api.js"></script>
+  <script src="/notes.js"></script>
 </body>
 </html>
