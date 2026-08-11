@@ -33,9 +33,38 @@
         <button type="submit" class="btn-primary">Send</button>
       </form>
     </div>
+
+    <div class="card">
+      <h2>Store &amp; Auth</h2>
+      <p class="hint">Enter the target store and its credentials. Nothing is saved — you'll re-enter it after a page reload.</p>
+      <div class="field-row">
+        <label for="wc-store-url">Store URL</label>
+        <input id="wc-store-url" type="text" placeholder="mystore.com">
+      </div>
+      <div class="field-row">
+        <label for="wc-df-token">Doofinder-Token (plugin API)</label>
+        <input id="wc-df-token" type="text" placeholder="paste manually">
+      </div>
+      <div class="field-row">
+        <label for="wc-api-user">WooCommerce API Username / Consumer Key</label>
+        <input id="wc-api-user" type="text" placeholder="api_user">
+      </div>
+      <div class="field-row">
+        <label for="wc-api-pass">WooCommerce API Password / Consumer Secret</label>
+        <input id="wc-api-pass" type="text" placeholder="api_pass">
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>API Calls</h2>
+      <p class="hint">Expand a section and click "Call endpoint" — requests run through the server proxy to avoid CORS.</p>
+      <div id="wc-api-endpoints"></div>
+    </div>
   </div>
 
   <script>window.PLATFORM = 'woocommerce';</script>
   <script src="/platform.js"></script>
+  <script src="/api-tools.js"></script>
+  <script src="/wc-api.js"></script>
 </body>
 </html>

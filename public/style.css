@@ -236,3 +236,218 @@ h1 span {
   font-weight: 600;
   font-size: 15px;
 }
+
+/* Store & Auth fields */
+.field-row {
+  margin-bottom: 14px;
+}
+
+.field-row label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: #555;
+  margin-bottom: 4px;
+}
+
+.field-row input {
+  width: 100%;
+  font-family: monospace;
+  font-size: 13px;
+  padding: 8px 10px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  background: #fafafa;
+  color: #333;
+}
+
+.field-row input:focus {
+  outline: none;
+  border-color: #6C63FF;
+}
+
+/* API call accordions */
+.divider {
+  height: 1px;
+  background: #eee;
+  margin: 14px 0;
+}
+
+.accordion-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 0;
+  cursor: pointer;
+  user-select: none;
+  background: none;
+  border: none;
+  width: 100%;
+  text-align: left;
+}
+
+.accordion-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: #6C63FF;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.accordion-chevron {
+  font-size: 11px;
+  color: #aaa;
+  transition: transform 0.2s;
+}
+
+.accordion-header.open .accordion-chevron {
+  transform: rotate(180deg);
+}
+
+.accordion-body {
+  display: none;
+  padding: 0 0 14px;
+}
+
+.accordion-body.open {
+  display: block;
+}
+
+.endpoint-path {
+  font-family: monospace;
+  font-size: 13px;
+  color: #333;
+  margin-bottom: 12px;
+  background: #f5f5f5;
+  padding: 6px 10px;
+  border-radius: 4px;
+  word-break: break-all;
+}
+
+.params-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 10px;
+  flex-wrap: wrap;
+}
+
+.param-group {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.param-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.param-input {
+  font-family: monospace;
+  font-size: 13px;
+  padding: 4px 6px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background: #fafafa;
+  color: #333;
+  width: 100px;
+}
+
+.action-row {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-call {
+  flex: 1;
+  padding: 9px 16px;
+  background: #6C63FF;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.btn-call:hover:not(:disabled) {
+  background: #574fd6;
+}
+
+.btn-call:disabled {
+  background: #c4c1f7;
+  cursor: not-allowed;
+}
+
+.btn-curl {
+  padding: 9px 12px;
+  background: #fff;
+  color: #6C63FF;
+  border: 1.5px solid #6C63FF;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s, color 0.15s;
+}
+
+.btn-curl:hover {
+  background: #6C63FF;
+  color: #fff;
+}
+
+.response-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 12px;
+  min-height: 20px;
+}
+
+.time-taken {
+  font-size: 12px;
+  color: #888;
+}
+
+.response-box {
+  margin-top: 10px;
+  max-height: 320px;
+  overflow-y: auto;
+  border-radius: 6px;
+  border: 1px solid #e0e0e0;
+  background: #fafafa;
+}
+
+.response-box pre {
+  margin: 0;
+  padding: 10px;
+  font-size: 12px;
+  font-family: monospace;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+.btn-copy {
+  display: block;
+  width: 100%;
+  margin-top: 8px;
+  padding: 7px;
+  background: #fff;
+  color: #6C63FF;
+  border: 1.5px solid #6C63FF;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+
+.btn-copy:hover {
+  background: #6C63FF;
+  color: #fff;
+}
