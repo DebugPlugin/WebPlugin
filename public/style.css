@@ -237,6 +237,28 @@ h1 span {
   font-size: 15px;
 }
 
+/* Wide two-column layout (WooCommerce/Magento pages) */
+.page-wide {
+  max-width: 1180px;
+}
+
+.page-columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  align-items: start;
+}
+
+.page-col {
+  min-width: 0;
+}
+
+@media (max-width: 860px) {
+  .page-columns {
+    grid-template-columns: 1fr;
+  }
+}
+
 /* Store & Auth fields */
 .field-row {
   margin-bottom: 14px;

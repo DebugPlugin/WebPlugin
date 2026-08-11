@@ -7,54 +7,60 @@
   <link rel="stylesheet" href="/style.css">
 </head>
 <body>
-  <div class="page">
+  <div class="page page-wide">
     <a class="back-link" href="/">← All platforms</a>
     <h1>Magento</h1>
     <p class="subtitle">Doofinder plugin explorer</p>
 
-    <div class="card">
-      <h2>Plugin Version</h2>
-      <p class="hint">The latest version is selected by default. Pick another one from the dropdown if needed.</p>
-      <div class="version-row">
-        <select id="version-select" class="param-select">
-          <option value="">Loading releases...</option>
-        </select>
-        <button id="btn-download" class="btn-primary">Download</button>
-        <span id="download-status" class="status-badge hidden"></span>
-      </div>
-    </div>
+    <div class="page-columns">
+      <div class="page-col">
+        <div class="card">
+          <h2>Plugin Version</h2>
+          <p class="hint">The latest version is selected by default. Pick another one from the dropdown if needed.</p>
+          <div class="version-row">
+            <select id="version-select" class="param-select">
+              <option value="">Loading releases...</option>
+            </select>
+            <button id="btn-download" class="btn-primary">Download</button>
+            <span id="download-status" class="status-badge hidden"></span>
+          </div>
+        </div>
 
-    <div class="card">
-      <h2>Chat about the plugin code</h2>
-      <p class="hint">Ask a question below — the selected version downloads automatically if needed.</p>
-      <div id="chat-log"></div>
-      <form id="chat-form" class="chat-form">
-        <input id="chat-input" type="text" class="chat-input" placeholder="Ask something about the plugin code..." autocomplete="off">
-        <button type="submit" class="btn-primary">Send</button>
-      </form>
-    </div>
+        <div class="card">
+          <h2>Chat about the plugin code</h2>
+          <p class="hint">Ask a question below — the selected version downloads automatically if needed.</p>
+          <div id="chat-log"></div>
+          <form id="chat-form" class="chat-form">
+            <input id="chat-input" type="text" class="chat-input" placeholder="Ask something about the plugin code..." autocomplete="off">
+            <button type="submit" class="btn-primary">Send</button>
+          </form>
+        </div>
+      </div>
 
-    <div class="card">
-      <h2>Store &amp; Auth</h2>
-      <p class="hint">Enter the target store and its credentials. Nothing is saved — you'll re-enter it after a page reload.</p>
-      <div class="field-row">
-        <label for="mg-store-url">Store URL</label>
-        <input id="mg-store-url" type="text" placeholder="mystore.com">
-      </div>
-      <div class="field-row">
-        <label for="mg-store-code">Store code</label>
-        <input id="mg-store-code" type="text" placeholder="default" value="default">
-      </div>
-      <div class="field-row">
-        <label for="mg-bearer-token">Bearer Token</label>
-        <input id="mg-bearer-token" type="text" placeholder="paste manually">
-      </div>
-    </div>
+      <div class="page-col">
+        <div class="card">
+          <h2>Store &amp; Auth</h2>
+          <p class="hint">Enter the target store and its credentials. Nothing is saved — you'll re-enter it after a page reload.</p>
+          <div class="field-row">
+            <label for="mg-store-url">Store URL</label>
+            <input id="mg-store-url" type="text" placeholder="mystore.com">
+          </div>
+          <div class="field-row">
+            <label for="mg-store-code">Store code</label>
+            <input id="mg-store-code" type="text" placeholder="default" value="default">
+          </div>
+          <div class="field-row">
+            <label for="mg-bearer-token">Bearer Token</label>
+            <input id="mg-bearer-token" type="text" placeholder="paste manually">
+          </div>
+        </div>
 
-    <div class="card">
-      <h2>API Calls</h2>
-      <p class="hint">Expand a section and click "Call endpoint" — requests run through the server proxy to avoid CORS.</p>
-      <div id="mg-api-endpoints"></div>
+        <div class="card">
+          <h2>API Calls</h2>
+          <p class="hint">Expand a section and click "Call endpoint" — requests run through the server proxy to avoid CORS.</p>
+          <div id="mg-api-endpoints"></div>
+        </div>
+      </div>
     </div>
   </div>
 
