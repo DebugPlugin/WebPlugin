@@ -317,6 +317,20 @@ h1 span {
   border-color: #6C63FF;
 }
 
+.checkbox-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #666;
+  margin-bottom: 10px;
+  cursor: pointer;
+}
+
+.checkbox-row input {
+  cursor: pointer;
+}
+
 /* Store & Auth fields */
 .field-row {
   margin-bottom: 14px;

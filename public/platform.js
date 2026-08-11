@@ -70,6 +70,7 @@
   const chatLog = document.getElementById('chat-log');
   const chatForm = document.getElementById('chat-form');
   const chatInput = document.getElementById('chat-input');
+  const includeApiCheckbox = document.getElementById('chat-include-api');
 
   function appendChatMessage(role, text) {
     const row = document.createElement('div');
@@ -94,7 +95,18 @@
     chatInput.disabled = true;
 
     appendChatMessage('user', message);
-    chatHistory.push({ role: 'user', content: message });
+
+    let outgoingContent = message;
+    if (includeApiCheckbox && includeApiCheckbox.checked && window.ApiTools) {
+      const last = ApiTools.getLastResponse();
+      if (last) {
+        outgoingContent =
+          `[Context: response from "${last.title}" (${last.url}), HTTP ${last.status}]\n` +
+          '```json\n' + last.json + '\n```\n\n' + message;
+      }
+      includeApiCheckbox.checked = false;
+    }
+    chatHistory.push({ role: 'user', content: outgoingContent });
 
     const pendingBody = appendChatMessage('assistant', '...');
 

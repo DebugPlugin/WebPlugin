@@ -1,4 +1,10 @@
 window.ApiTools = (function () {
+  let lastResponse = null;
+
+  function getLastResponse() {
+    return lastResponse;
+  }
+
   function normalizeUrl(raw) {
     return (raw || "").trim().replace(/^https?:\/\//, "").replace(/\/+$/, "");
   }
@@ -110,6 +116,7 @@ window.ApiTools = (function () {
           time.classList.remove("hidden");
           box.classList.remove("hidden");
           btnCopy.classList.remove("hidden");
+          lastResponse = { title: ep.title, url, status: res.status, json: pretty };
           btnCopy.onclick = () => {
             navigator.clipboard.writeText(raw).then(() => {
               btnCopy.textContent = "✓ Copied!";
@@ -155,5 +162,5 @@ window.ApiTools = (function () {
     });
   }
 
-  return { normalizeUrl, basicAuth, callProxy, mount };
+  return { normalizeUrl, basicAuth, callProxy, mount, getLastResponse };
 })();
