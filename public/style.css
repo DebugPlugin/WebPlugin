@@ -259,7 +259,7 @@ h1 span {
   }
 }
 
-/* Collapsible top-level section (Store & Auth + API Calls) */
+/* Collapsible top-level sections (Store & API tools / Notes / Screenshots) */
 .section-toggle {
   display: flex;
   align-items: center;
@@ -274,6 +274,11 @@ h1 span {
   font-weight: 700;
   color: #4a42d4;
   text-align: left;
+  margin-top: 16px;
+}
+
+.page-col > .section-toggle:first-child {
+  margin-top: 0;
 }
 
 .section-toggle:hover {
@@ -315,6 +320,69 @@ h1 span {
 .notes-textarea:focus {
   outline: none;
   border-color: #6C63FF;
+}
+
+/* Screenshots */
+.screenshot-grid {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.screenshot-slot {
+  position: relative;
+  width: 110px;
+  height: 110px;
+}
+
+.screenshot-input {
+  display: none;
+}
+
+.screenshot-preview {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  border: 1.5px dashed #ccc;
+  border-radius: 8px;
+  cursor: pointer;
+  overflow: hidden;
+  background: #fafafa;
+  color: #999;
+  font-size: 12px;
+  transition: border-color 0.15s;
+}
+
+.screenshot-preview:hover {
+  border-color: #6C63FF;
+}
+
+.screenshot-preview:not(.empty) {
+  border-style: solid;
+  border-color: #e0e0e0;
+}
+
+.screenshot-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.screenshot-remove {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 1px solid #ddd;
+  background: #fff;
+  color: #cf222e;
+  font-size: 12px;
+  line-height: 1;
+  cursor: pointer;
 }
 
 .checkbox-row {

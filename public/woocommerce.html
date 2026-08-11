@@ -34,6 +34,10 @@
             <input type="checkbox" id="chat-include-api">
             Include last API response (from the API Calls section) in this message
           </label>
+          <label class="checkbox-row">
+            <input type="checkbox" id="chat-include-screenshots" data-storage-key="wc-screenshots">
+            Include screenshots (from the Screenshots section) in this message
+          </label>
           <form id="chat-form" class="chat-form">
             <input id="chat-input" type="text" class="chat-input" placeholder="Ask something about the plugin code..." autocomplete="off">
             <button type="submit" class="btn-primary">Send</button>
@@ -42,11 +46,11 @@
       </div>
 
       <div class="page-col">
-        <button class="section-toggle open" id="wc-section-a-toggle" type="button" data-target="wc-section-a-body">
+        <button class="section-toggle" id="wc-section-a-toggle" type="button" data-target="wc-section-a-body">
           <span>Store &amp; API tools</span>
           <span class="section-chevron">▼</span>
         </button>
-        <div class="section-body open" id="wc-section-a-body">
+        <div class="section-body" id="wc-section-a-body">
           <div class="card">
             <h2>Store &amp; Auth</h2>
             <p class="hint">Enter the target store and its credentials. Nothing is saved — you'll re-enter it after a page reload.</p>
@@ -75,10 +79,28 @@
           </div>
         </div>
 
-        <div class="card">
-          <h2>Notes</h2>
-          <p class="hint">Free text — saved automatically in this browser.</p>
-          <textarea id="wc-notes" class="notes-textarea" data-storage-key="wc-notes" placeholder="Write anything here..."></textarea>
+        <button class="section-toggle" id="wc-section-notes-toggle" type="button" data-target="wc-section-notes-body">
+          <span>Notes</span>
+          <span class="section-chevron">▼</span>
+        </button>
+        <div class="section-body" id="wc-section-notes-body">
+          <div class="card">
+            <h2>Notes</h2>
+            <p class="hint">Free text — saved automatically in this browser.</p>
+            <textarea id="wc-notes" class="notes-textarea" data-storage-key="wc-notes" placeholder="Write anything here..."></textarea>
+          </div>
+        </div>
+
+        <button class="section-toggle" id="wc-section-screenshots-toggle" type="button" data-target="wc-section-screenshots-body">
+          <span>Screenshots</span>
+          <span class="section-chevron">▼</span>
+        </button>
+        <div class="section-body" id="wc-section-screenshots-body">
+          <div class="card">
+            <h2>Screenshots</h2>
+            <p class="hint">Up to 3 images, saved in this browser. Check "Include screenshots" in the chat to send them to Claude as visual context.</p>
+            <div id="wc-screenshots" class="screenshot-grid"></div>
+          </div>
         </div>
       </div>
     </div>
@@ -89,5 +111,7 @@
   <script src="/api-tools.js"></script>
   <script src="/wc-api.js"></script>
   <script src="/notes.js"></script>
+  <script src="/screenshots.js"></script>
+  <script>Screenshots.mount(document.getElementById('wc-screenshots'), 'wc-screenshots');</script>
 </body>
 </html>

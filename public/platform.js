@@ -71,6 +71,7 @@
   const chatForm = document.getElementById('chat-form');
   const chatInput = document.getElementById('chat-input');
   const includeApiCheckbox = document.getElementById('chat-include-api');
+  const includeScreenshotsCheckbox = document.getElementById('chat-include-screenshots');
 
   function appendChatMessage(role, text) {
     const row = document.createElement('div');
@@ -96,16 +97,32 @@
 
     appendChatMessage('user', message);
 
-    let outgoingContent = message;
+    const blocks = [];
+    let hasExtraContext = false;
+
     if (includeApiCheckbox && includeApiCheckbox.checked && window.ApiTools) {
       const last = ApiTools.getLastResponse();
       if (last) {
-        outgoingContent =
-          `[Context: response from "${last.title}" (${last.url}), HTTP ${last.status}]\n` +
-          '```json\n' + last.json + '\n```\n\n' + message;
+        blocks.push({
+          type: 'text',
+          text: `[Context: response from "${last.title}" (${last.url}), HTTP ${last.status}]\n\`\`\`json\n${last.json}\n\`\`\``
+        });
+        hasExtraContext = true;
       }
       includeApiCheckbox.checked = false;
     }
+
+    if (includeScreenshotsCheckbox && includeScreenshotsCheckbox.checked && window.Screenshots) {
+      const images = Screenshots.getAll(includeScreenshotsCheckbox.dataset.storageKey);
+      images.forEach((img) => {
+        blocks.push({ type: 'image', source: { type: 'base64', media_type: img.mediaType, data: img.base64 } });
+      });
+      if (images.length) hasExtraContext = true;
+      includeScreenshotsCheckbox.checked = false;
+    }
+
+    blocks.push({ type: 'text', text: message });
+    const outgoingContent = hasExtraContext ? blocks : message;
     chatHistory.push({ role: 'user', content: outgoingContent });
 
     const pendingBody = appendChatMessage('assistant', '...');
