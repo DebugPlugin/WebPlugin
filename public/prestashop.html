@@ -7,58 +7,64 @@
   <link rel="stylesheet" href="/style.css">
 </head>
 <body>
-  <div class="page">
+  <div class="page page-wide">
     <a class="back-link" href="/">← All platforms</a>
     <h1>PrestaShop</h1>
     <p class="subtitle">Doofinder plugin explorer</p>
 
-    <div class="card">
-      <h2>Plugin Version</h2>
-      <p class="hint">The latest version is selected by default. Pick another one from the dropdown if needed.</p>
-      <div class="version-row">
-        <select id="version-select" class="param-select">
-          <option value="">Loading releases...</option>
-        </select>
-        <button id="btn-download" class="btn-primary">Download</button>
-        <span id="download-status" class="status-badge hidden"></span>
+    <div class="page-columns">
+      <div class="page-col">
+        <div class="card">
+          <h2>Plugin Version</h2>
+          <p class="hint">The latest version is selected by default. Pick another one from the dropdown if needed.</p>
+          <div class="version-row">
+            <select id="version-select" class="param-select">
+              <option value="">Loading releases...</option>
+            </select>
+            <button id="btn-download" class="btn-primary">Download</button>
+            <span id="download-status" class="status-badge hidden"></span>
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>Chat about the plugin code</h2>
+          <p class="hint">Ask a question below — the selected version downloads automatically if needed.</p>
+          <div id="chat-log"></div>
+          <label class="checkbox-row">
+            <input type="checkbox" id="chat-include-screenshots" data-storage-key="ps-screenshots">
+            Include screenshots (from the Screenshots section) in this message
+          </label>
+          <form id="chat-form" class="chat-form">
+            <input id="chat-input" type="text" class="chat-input" placeholder="Ask something about the plugin code..." autocomplete="off">
+            <button type="submit" class="btn-primary">Send</button>
+          </form>
+        </div>
       </div>
-    </div>
 
-    <div class="card">
-      <h2>Chat about the plugin code</h2>
-      <p class="hint">Ask a question below — the selected version downloads automatically if needed.</p>
-      <div id="chat-log"></div>
-      <label class="checkbox-row">
-        <input type="checkbox" id="chat-include-screenshots" data-storage-key="ps-screenshots">
-        Include screenshots (from the Screenshots section) in this message
-      </label>
-      <form id="chat-form" class="chat-form">
-        <input id="chat-input" type="text" class="chat-input" placeholder="Ask something about the plugin code..." autocomplete="off">
-        <button type="submit" class="btn-primary">Send</button>
-      </form>
-    </div>
+      <div class="page-col">
+        <button class="section-toggle" id="ps-section-notes-toggle" type="button" data-target="ps-section-notes-body">
+          <span>Notes</span>
+          <span class="section-chevron">▼</span>
+        </button>
+        <div class="section-body" id="ps-section-notes-body">
+          <div class="card">
+            <h2>Notes</h2>
+            <p class="hint">Free text — saved automatically in this browser.</p>
+            <textarea id="ps-notes" class="notes-textarea" data-storage-key="ps-notes" placeholder="Write anything here..."></textarea>
+          </div>
+        </div>
 
-    <button class="section-toggle" id="ps-section-notes-toggle" type="button" data-target="ps-section-notes-body">
-      <span>Notes</span>
-      <span class="section-chevron">▼</span>
-    </button>
-    <div class="section-body" id="ps-section-notes-body">
-      <div class="card">
-        <h2>Notes</h2>
-        <p class="hint">Free text — saved automatically in this browser.</p>
-        <textarea id="ps-notes" class="notes-textarea" data-storage-key="ps-notes" placeholder="Write anything here..."></textarea>
-      </div>
-    </div>
-
-    <button class="section-toggle" id="ps-section-screenshots-toggle" type="button" data-target="ps-section-screenshots-body">
-      <span>Screenshots</span>
-      <span class="section-chevron">▼</span>
-    </button>
-    <div class="section-body" id="ps-section-screenshots-body">
-      <div class="card">
-        <h2>Screenshots</h2>
-        <p class="hint">Up to 4 images, saved in this browser. Check "Include screenshots" in the chat to send them to Claude as visual context.</p>
-        <div id="ps-screenshots" class="screenshot-grid"></div>
+        <button class="section-toggle" id="ps-section-screenshots-toggle" type="button" data-target="ps-section-screenshots-body">
+          <span>Screenshots</span>
+          <span class="section-chevron">▼</span>
+        </button>
+        <div class="section-body" id="ps-section-screenshots-body">
+          <div class="card">
+            <h2>Screenshots</h2>
+            <p class="hint">Up to 4 images, saved in this browser. Check "Include screenshots" in the chat to send them to Claude as visual context.</p>
+            <div id="ps-screenshots" class="screenshot-grid"></div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
