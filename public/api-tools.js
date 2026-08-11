@@ -13,6 +13,16 @@ window.ApiTools = (function () {
     return "Basic " + btoa(`${user}:${pass}`);
   }
 
+  const SENSITIVE_HEADER = /authorization|token|key|secret/i;
+
+  function redactHeaders(headers) {
+    const out = {};
+    Object.entries(headers || {}).forEach(([k, v]) => {
+      out[k] = SENSITIVE_HEADER.test(k) ? "[redacted]" : v;
+    });
+    return out;
+  }
+
   async function callProxy(url, { method = "GET", headers = {}, body } = {}) {
     const t0 = performance.now();
     const res = await fetch("/api/proxy", {
@@ -116,7 +126,14 @@ window.ApiTools = (function () {
           time.classList.remove("hidden");
           box.classList.remove("hidden");
           btnCopy.classList.remove("hidden");
-          lastResponse = { title: ep.title, url, status: res.status, json: pretty };
+          lastResponse = {
+            title: ep.title,
+            method: method || "GET",
+            url,
+            headers: redactHeaders(headers),
+            status: res.status,
+            json: pretty,
+          };
           btnCopy.onclick = () => {
             navigator.clipboard.writeText(raw).then(() => {
               btnCopy.textContent = "✓ Copied!";

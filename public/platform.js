@@ -103,9 +103,10 @@
     if (includeApiCheckbox && includeApiCheckbox.checked && window.ApiTools) {
       const last = ApiTools.getLastResponse();
       if (last) {
+        const headerLines = Object.entries(last.headers || {}).map(([k, v]) => `${k}: ${v}`).join('\n');
         blocks.push({
           type: 'text',
-          text: `[Context: response from "${last.title}" (${last.url}), HTTP ${last.status}]\n\`\`\`json\n${last.json}\n\`\`\``
+          text: `[Context: response from "${last.title}"]\n${last.method} ${last.url}\n${headerLines}\nHTTP ${last.status}\n\`\`\`json\n${last.json}\n\`\`\``
         });
         hasExtraContext = true;
       }
