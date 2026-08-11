@@ -399,6 +399,16 @@ h1 span {
   cursor: pointer;
 }
 
+.privacy-warning {
+  font-size: 12px;
+  color: #9a6700;
+  background: #fff8e1;
+  border-left: 3px solid #f0c040;
+  padding: 6px 10px;
+  margin-bottom: 10px;
+  border-radius: 0 4px 4px 0;
+}
+
 /* Store & Auth fields */
 .field-row {
   margin-bottom: 14px;

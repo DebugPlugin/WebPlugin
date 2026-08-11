@@ -35,13 +35,23 @@ window.ApiTools = (function () {
     return { ...data, elapsed: Math.round(performance.now() - t0) };
   }
 
+  function paramFieldHTML(ep, p) {
+    if (p.type === "select") {
+      const options = (p.options || [])
+        .map((o) => `<option value="${o}" ${o === p.default ? "selected" : ""}>${o}</option>`)
+        .join("");
+      return `<select id="${ep.key}-${p.id}" class="param-input">${options}</select>`;
+    }
+    return `<input id="${ep.key}-${p.id}" class="param-input" type="${p.type || "text"}" value="${p.default ?? ""}" ${p.type === "number" ? 'min="1"' : ""} placeholder="${p.placeholder || ""}">`;
+  }
+
   function accordionHTML(ep) {
     const paramsHtml = (ep.params || [])
       .map(
         (p) => `
       <div class="param-group">
         <label class="param-label" for="${ep.key}-${p.id}">${p.label}</label>
-        <input id="${ep.key}-${p.id}" class="param-input" type="${p.type || "text"}" value="${p.default ?? ""}" ${p.type === "number" ? 'min="1"' : ""} placeholder="${p.placeholder || ""}">
+        ${paramFieldHTML(ep, p)}
       </div>`
       )
       .join("");

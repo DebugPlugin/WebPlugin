@@ -13,6 +13,10 @@
     return { Authorization: ApiTools.basicAuth(userInput.value.trim(), passInput.value.trim()) };
   }
 
+  // Deliberately excludes "users", "comments" etc. — this tool is meant for catalog/content
+  // debugging, not for browsing endpoints that can return personal data.
+  const SAFE_CONTENT_TYPES = ["posts", "pages", "product", "media", "product_cat", "product_tag"];
+
   const ENDPOINTS = [
     {
       key: "wc-product",
@@ -66,7 +70,7 @@
       title: "Original REST API — Content",
       pathLabel: "/?rest_route=/wp/v2/{entry}",
       params: [
-        { id: "entry", label: "entry", type: "text", placeholder: "e.g. posts, pages" },
+        { id: "entry", label: "entry", type: "select", options: SAFE_CONTENT_TYPES, default: "posts" },
         { id: "page", label: "page", type: "number", default: 1 },
         { id: "per_page", label: "per_page", type: "number", default: 30 },
       ],
@@ -80,7 +84,7 @@
       title: "Original REST API — Content by ID",
       pathLabel: "/?rest_route=/wp/v2/{entry}/{id}",
       params: [
-        { id: "entry", label: "entry", type: "text", placeholder: "e.g. posts, pages" },
+        { id: "entry", label: "entry", type: "select", options: SAFE_CONTENT_TYPES, default: "posts" },
         { id: "id", label: "ID", type: "text", placeholder: "e.g. 42" },
       ],
       build(base, get) {
