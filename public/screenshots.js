@@ -28,7 +28,7 @@ window.Screenshots = (function () {
   }
 
   function mount(container, storageKey, slotCount) {
-    slotCount = slotCount || 3;
+    slotCount = slotCount || 4;
     let items = [];
     try {
       items = JSON.parse(localStorage.getItem(storageKey) || "[]");

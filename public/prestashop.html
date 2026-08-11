@@ -28,14 +28,45 @@
       <h2>Chat about the plugin code</h2>
       <p class="hint">Ask a question below — the selected version downloads automatically if needed.</p>
       <div id="chat-log"></div>
+      <label class="checkbox-row">
+        <input type="checkbox" id="chat-include-screenshots" data-storage-key="ps-screenshots">
+        Include screenshots (from the Screenshots section) in this message
+      </label>
       <form id="chat-form" class="chat-form">
         <input id="chat-input" type="text" class="chat-input" placeholder="Ask something about the plugin code..." autocomplete="off">
         <button type="submit" class="btn-primary">Send</button>
       </form>
     </div>
+
+    <button class="section-toggle" id="ps-section-notes-toggle" type="button" data-target="ps-section-notes-body">
+      <span>Notes</span>
+      <span class="section-chevron">▼</span>
+    </button>
+    <div class="section-body" id="ps-section-notes-body">
+      <div class="card">
+        <h2>Notes</h2>
+        <p class="hint">Free text — saved automatically in this browser.</p>
+        <textarea id="ps-notes" class="notes-textarea" data-storage-key="ps-notes" placeholder="Write anything here..."></textarea>
+      </div>
+    </div>
+
+    <button class="section-toggle" id="ps-section-screenshots-toggle" type="button" data-target="ps-section-screenshots-body">
+      <span>Screenshots</span>
+      <span class="section-chevron">▼</span>
+    </button>
+    <div class="section-body" id="ps-section-screenshots-body">
+      <div class="card">
+        <h2>Screenshots</h2>
+        <p class="hint">Up to 4 images, saved in this browser. Check "Include screenshots" in the chat to send them to Claude as visual context.</p>
+        <div id="ps-screenshots" class="screenshot-grid"></div>
+      </div>
+    </div>
   </div>
 
   <script>window.PLATFORM = 'prestashop';</script>
   <script src="/platform.js"></script>
+  <script src="/notes.js"></script>
+  <script src="/screenshots.js"></script>
+  <script>Screenshots.mount(document.getElementById('ps-screenshots'), 'ps-screenshots');</script>
 </body>
 </html>
