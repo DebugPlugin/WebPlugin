@@ -6,7 +6,67 @@
   <p>Doofinder PrestaShop plugin — releases</p>
   <div id="list">Caricando releases...</div>
 
+  <hr style="margin: 32px 0;">
+
+  <h2>Chat sul codice del plugin</h2>
+  <p style="color: #555;">Scarica prima una versione qui sopra, poi fai domande sul suo codice.</p>
+  <div id="chat-log" style="border: 1px solid #ccc; border-radius: 6px; padding: 12px; height: 320px; overflow-y: auto; margin-bottom: 8px; background: #fafafa;"></div>
+  <form id="chat-form" style="display: flex; gap: 8px;">
+    <input id="chat-input" type="text" placeholder="Es: nella v8.2.3, dove si configura la API key?" style="flex: 1; padding: 8px;" autocomplete="off">
+    <button type="submit">Invia</button>
+  </form>
+
   <script>
+    const chatHistory = [];
+    const chatLog = document.getElementById('chat-log');
+    const chatForm = document.getElementById('chat-form');
+    const chatInput = document.getElementById('chat-input');
+
+    function appendChatMessage(role, text) {
+      const row = document.createElement('div');
+      row.style.margin = '8px 0';
+      row.style.whiteSpace = 'pre-wrap';
+      const label = role === 'user' ? '🧑 Tu' : '🤖 Claude';
+      row.innerHTML = `<b>${label}:</b> `;
+      row.appendChild(document.createTextNode(text));
+      chatLog.appendChild(row);
+      chatLog.scrollTop = chatLog.scrollHeight;
+      return row;
+    }
+
+    chatForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const message = chatInput.value.trim();
+      if (!message) return;
+      chatInput.value = '';
+      chatInput.disabled = true;
+
+      appendChatMessage('user', message);
+      chatHistory.push({ role: 'user', content: message });
+
+      const pending = appendChatMessage('assistant', '...');
+
+      try {
+        const res = await fetch('/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ messages: chatHistory })
+        });
+        const data = await res.json();
+        if (data.error) {
+          pending.lastChild.textContent = 'Errore: ' + data.error;
+        } else {
+          pending.lastChild.textContent = data.reply;
+          chatHistory.push({ role: 'assistant', content: data.reply });
+        }
+      } catch (err) {
+        pending.lastChild.textContent = 'Errore di rete: ' + err.message;
+      } finally {
+        chatInput.disabled = false;
+        chatInput.focus();
+      }
+    });
+
     async function load() {
       const res = await fetch('/api/releases');
       const releases = await res.json();
