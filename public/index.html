@@ -1,22 +1,105 @@
 <!doctype html>
-<html>
-<head><meta charset="utf-8"><title>DooPresta</title></head>
-<body style="font-family: sans-serif; max-width: 700px; margin: 40px auto;">
-  <h1>DooPresta</h1>
-  <p>Doofinder PrestaShop plugin — releases</p>
-  <div id="list">Caricando releases...</div>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Prestashop</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <div class="page">
+    <h1>Presta<span>shop</span></h1>
+    <p class="subtitle">Doofinder plugin explorer</p>
 
-  <hr style="margin: 32px 0;">
+    <div class="card">
+      <h2>Plugin Version</h2>
+      <p class="hint">The latest version is selected by default. Pick another one from the dropdown if needed.</p>
+      <div class="version-row">
+        <select id="version-select" class="param-select">
+          <option value="">Loading releases...</option>
+        </select>
+        <button id="btn-download" class="btn-primary">Download</button>
+        <span id="download-status" class="status-badge hidden"></span>
+      </div>
+    </div>
 
-  <h2>Chat sul codice del plugin</h2>
-  <p style="color: #555;">Scarica prima una versione qui sopra, poi fai domande sul suo codice.</p>
-  <div id="chat-log" style="border: 1px solid #ccc; border-radius: 6px; padding: 12px; height: 320px; overflow-y: auto; margin-bottom: 8px; background: #fafafa;"></div>
-  <form id="chat-form" style="display: flex; gap: 8px;">
-    <input id="chat-input" type="text" placeholder="Es: nella v8.2.3, dove si configura la API key?" style="flex: 1; padding: 8px;" autocomplete="off">
-    <button type="submit">Invia</button>
-  </form>
+    <div class="card">
+      <h2>Chat about the plugin code</h2>
+      <p class="hint">Ask a question below — the selected version downloads automatically if needed.</p>
+      <div id="chat-log"></div>
+      <form id="chat-form" class="chat-form">
+        <input id="chat-input" type="text" class="chat-input" placeholder="e.g. In v8.2.3, where is the API key configured?" autocomplete="off">
+        <button type="submit" class="btn-primary">Send</button>
+      </form>
+    </div>
+  </div>
 
   <script>
+    const versionSelect = document.getElementById('version-select');
+    const btnDownload = document.getElementById('btn-download');
+    const downloadStatus = document.getElementById('download-status');
+    let releases = [];
+
+    function setDownloadStatus(kind, text) {
+      downloadStatus.className = 'status-badge ' + kind;
+      downloadStatus.textContent = text;
+      downloadStatus.classList.remove('hidden');
+    }
+
+    function refreshStatusForSelection() {
+      const release = releases.find(r => r.tag === versionSelect.value);
+      if (release && release.downloaded) {
+        setDownloadStatus('ok', 'Downloaded');
+      } else {
+        downloadStatus.classList.add('hidden');
+      }
+    }
+
+    async function loadReleases() {
+      const res = await fetch('/api/releases');
+      releases = await res.json();
+      versionSelect.innerHTML = '';
+      releases.forEach(r => {
+        const opt = document.createElement('option');
+        opt.value = r.tag;
+        opt.textContent = r.name ? `${r.tag} — ${r.name}` : r.tag;
+        versionSelect.appendChild(opt);
+      });
+      refreshStatusForSelection();
+    }
+
+    versionSelect.addEventListener('change', refreshStatusForSelection);
+
+    btnDownload.addEventListener('click', async () => {
+      const tag = versionSelect.value;
+      if (!tag) return;
+      btnDownload.disabled = true;
+      setDownloadStatus('pending', 'Downloading...');
+      try {
+        const res = await fetch('/api/download', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ tag })
+        });
+        const data = await res.json();
+        if (data.error) {
+          setDownloadStatus('err', data.error);
+        } else {
+          const release = releases.find(r => r.tag === tag);
+          if (release) release.downloaded = true;
+          setDownloadStatus('ok', 'Downloaded');
+        }
+      } catch (err) {
+        setDownloadStatus('err', err.message);
+      } finally {
+        btnDownload.disabled = false;
+      }
+    });
+
+    loadReleases();
+
+    // ---------- Chat ----------
+
     const chatHistory = [];
     const chatLog = document.getElementById('chat-log');
     const chatForm = document.getElementById('chat-form');
@@ -24,14 +107,17 @@
 
     function appendChatMessage(role, text) {
       const row = document.createElement('div');
-      row.style.margin = '8px 0';
-      row.style.whiteSpace = 'pre-wrap';
-      const label = role === 'user' ? '🧑 Tu' : '🤖 Claude';
-      row.innerHTML = `<b>${label}:</b> `;
-      row.appendChild(document.createTextNode(text));
+      row.className = 'chat-message ' + role;
+      const who = document.createElement('div');
+      who.className = 'who';
+      who.textContent = role === 'user' ? 'You' : 'Claude';
+      const body = document.createElement('div');
+      body.textContent = text;
+      row.appendChild(who);
+      row.appendChild(body);
       chatLog.appendChild(row);
       chatLog.scrollTop = chatLog.scrollHeight;
-      return row;
+      return body;
     }
 
     chatForm.addEventListener('submit', async (e) => {
@@ -44,7 +130,7 @@
       appendChatMessage('user', message);
       chatHistory.push({ role: 'user', content: message });
 
-      const pending = appendChatMessage('assistant', '...');
+      const pendingBody = appendChatMessage('assistant', '...');
 
       try {
         const res = await fetch('/api/chat', {
@@ -54,51 +140,18 @@
         });
         const data = await res.json();
         if (data.error) {
-          pending.lastChild.textContent = 'Errore: ' + data.error;
+          pendingBody.textContent = 'Error: ' + data.error;
         } else {
-          pending.lastChild.textContent = data.reply;
+          pendingBody.textContent = data.reply;
           chatHistory.push({ role: 'assistant', content: data.reply });
         }
       } catch (err) {
-        pending.lastChild.textContent = 'Errore di rete: ' + err.message;
+        pendingBody.textContent = 'Network error: ' + err.message;
       } finally {
         chatInput.disabled = false;
         chatInput.focus();
       }
     });
-
-    async function load() {
-      const res = await fetch('/api/releases');
-      const releases = await res.json();
-      const list = document.getElementById('list');
-      list.innerHTML = '';
-      releases.forEach(r => {
-        const row = document.createElement('div');
-        row.style.margin = '8px 0';
-        row.innerHTML = `
-          <b>${r.tag}</b> ${r.name || ''} (${new Date(r.published_at).toLocaleDateString()})
-          ${r.downloaded
-            ? ' ✅ scaricata'
-            : ` <button data-tag="${r.tag}">Scarica</button>`}
-        `;
-        list.appendChild(row);
-      });
-      list.querySelectorAll('button').forEach(btn => {
-        btn.onclick = async () => {
-          btn.disabled = true;
-          btn.textContent = 'Scaricando...';
-          const res = await fetch('/api/download', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ tag: btn.dataset.tag })
-          });
-          const data = await res.json();
-          if (data.error) { alert(data.error); btn.disabled = false; btn.textContent = 'Scarica'; }
-          else load();
-        };
-      });
-    }
-    load();
   </script>
 </body>
 </html>
