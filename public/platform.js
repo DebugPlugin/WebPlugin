@@ -70,7 +70,8 @@
   const chatLog = document.getElementById('chat-log');
   const chatForm = document.getElementById('chat-form');
   const chatInput = document.getElementById('chat-input');
-  const includeApiCheckbox = document.getElementById('chat-include-api');
+  const includeApiCallCheckbox = document.getElementById('chat-include-api-call');
+  const includeApiJsonCheckbox = document.getElementById('chat-include-api-json');
   const includeScreenshotsCheckbox = document.getElementById('chat-include-screenshots');
 
   function appendChatMessage(role, text) {
@@ -100,17 +101,30 @@
     const blocks = [];
     let hasExtraContext = false;
 
-    if (includeApiCheckbox && includeApiCheckbox.checked && window.ApiTools) {
+    const wantsApiCall = includeApiCallCheckbox && includeApiCallCheckbox.checked;
+    const wantsApiJson = includeApiJsonCheckbox && includeApiJsonCheckbox.checked;
+
+    if ((wantsApiCall || wantsApiJson) && window.ApiTools) {
       const last = ApiTools.getLastResponse();
       if (last) {
-        const headerLines = Object.entries(last.headers || {}).map(([k, v]) => `${k}: ${v}`).join('\n');
-        blocks.push({
-          type: 'text',
-          text: `[Context: response from "${last.title}"]\n${last.method} ${last.url}\n${headerLines}\nHTTP ${last.status}\n\`\`\`json\n${last.json}\n\`\`\``
-        });
-        hasExtraContext = true;
+        if (wantsApiCall) {
+          const headerLines = Object.entries(last.headers || {}).map(([k, v]) => `${k}: ${v}`).join('\n');
+          blocks.push({
+            type: 'text',
+            text: `[Context: API call made — "${last.title}"]\n${last.method} ${last.url}\n${headerLines}`
+          });
+          hasExtraContext = true;
+        }
+        if (wantsApiJson) {
+          blocks.push({
+            type: 'text',
+            text: `[Context: API response from "${last.title}", HTTP ${last.status}]\n\`\`\`json\n${last.json}\n\`\`\``
+          });
+          hasExtraContext = true;
+        }
       }
-      includeApiCheckbox.checked = false;
+      if (includeApiCallCheckbox) includeApiCallCheckbox.checked = false;
+      if (includeApiJsonCheckbox) includeApiJsonCheckbox.checked = false;
     }
 
     if (includeScreenshotsCheckbox && includeScreenshotsCheckbox.checked && window.Screenshots) {

@@ -31,8 +31,12 @@
           <p class="hint">Ask a question below — the selected version downloads automatically if needed.</p>
           <div id="chat-log"></div>
           <label class="checkbox-row">
-            <input type="checkbox" id="chat-include-api">
-            Include last API response (from the API Calls section) in this message
+            <input type="checkbox" id="chat-include-api-call">
+            Include last API call (method, URL, headers — tokens redacted) in this message
+          </label>
+          <label class="checkbox-row">
+            <input type="checkbox" id="chat-include-api-json">
+            Include last API response (JSON) in this message
           </label>
           <label class="checkbox-row">
             <input type="checkbox" id="chat-include-screenshots" data-storage-key="mg-screenshots">
