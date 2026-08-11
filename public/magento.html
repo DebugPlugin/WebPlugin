@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Magento — Doofinder Plugin Explorer</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <div class="page">
+    <a class="back-link" href="/">← All platforms</a>
+    <h1>Magento</h1>
+    <p class="subtitle">Doofinder plugin explorer</p>
+
+    <div class="card">
+      <h2>Plugin Version</h2>
+      <p class="hint">The latest version is selected by default. Pick another one from the dropdown if needed.</p>
+      <div class="version-row">
+        <select id="version-select" class="param-select">
+          <option value="">Loading releases...</option>
+        </select>
+        <button id="btn-download" class="btn-primary">Download</button>
+        <span id="download-status" class="status-badge hidden"></span>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Chat about the plugin code</h2>
+      <p class="hint">Ask a question below — the selected version downloads automatically if needed.</p>
+      <div id="chat-log"></div>
+      <form id="chat-form" class="chat-form">
+        <input id="chat-input" type="text" class="chat-input" placeholder="Ask something about the plugin code..." autocomplete="off">
+        <button type="submit" class="btn-primary">Send</button>
+      </form>
+    </div>
+  </div>
+
+  <script>window.PLATFORM = 'magento';</script>
+  <script src="/platform.js"></script>
+</body>
+</html>

@@ -3,155 +3,28 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Prestashop</title>
+  <title>Doofinder Plugin Explorer</title>
   <link rel="stylesheet" href="/style.css">
 </head>
 <body>
   <div class="page">
-    <h1>Presta<span>shop</span></h1>
-    <p class="subtitle">Doofinder plugin explorer</p>
+    <h1>Doofinder <span>Plugin Explorer</span></h1>
+    <p class="subtitle">Choose a platform to browse plugin releases and chat about its code.</p>
 
-    <div class="card">
-      <h2>Plugin Version</h2>
-      <p class="hint">The latest version is selected by default. Pick another one from the dropdown if needed.</p>
-      <div class="version-row">
-        <select id="version-select" class="param-select">
-          <option value="">Loading releases...</option>
-        </select>
-        <button id="btn-download" class="btn-primary">Download</button>
-        <span id="download-status" class="status-badge hidden"></span>
-      </div>
-    </div>
-
-    <div class="card">
-      <h2>Chat about the plugin code</h2>
-      <p class="hint">Ask a question below — the selected version downloads automatically if needed.</p>
-      <div id="chat-log"></div>
-      <form id="chat-form" class="chat-form">
-        <input id="chat-input" type="text" class="chat-input" placeholder="e.g. In v8.2.3, where is the API key configured?" autocomplete="off">
-        <button type="submit" class="btn-primary">Send</button>
-      </form>
+    <div class="platform-grid">
+      <a class="platform-card" href="/prestashop.html">
+        <div class="icon">PS</div>
+        <div class="name">PrestaShop</div>
+      </a>
+      <a class="platform-card" href="/magento.html">
+        <div class="icon">MG</div>
+        <div class="name">Magento</div>
+      </a>
+      <a class="platform-card" href="/woocommerce.html">
+        <div class="icon">WC</div>
+        <div class="name">WooCommerce</div>
+      </a>
     </div>
   </div>
-
-  <script>
-    const versionSelect = document.getElementById('version-select');
-    const btnDownload = document.getElementById('btn-download');
-    const downloadStatus = document.getElementById('download-status');
-    let releases = [];
-
-    function setDownloadStatus(kind, text) {
-      downloadStatus.className = 'status-badge ' + kind;
-      downloadStatus.textContent = text;
-      downloadStatus.classList.remove('hidden');
-    }
-
-    function refreshStatusForSelection() {
-      const release = releases.find(r => r.tag === versionSelect.value);
-      if (release && release.downloaded) {
-        setDownloadStatus('ok', 'Downloaded');
-      } else {
-        downloadStatus.classList.add('hidden');
-      }
-    }
-
-    async function loadReleases() {
-      const res = await fetch('/api/releases');
-      releases = await res.json();
-      versionSelect.innerHTML = '';
-      releases.forEach(r => {
-        const opt = document.createElement('option');
-        opt.value = r.tag;
-        opt.textContent = r.name ? `${r.tag} — ${r.name}` : r.tag;
-        versionSelect.appendChild(opt);
-      });
-      refreshStatusForSelection();
-    }
-
-    versionSelect.addEventListener('change', refreshStatusForSelection);
-
-    btnDownload.addEventListener('click', async () => {
-      const tag = versionSelect.value;
-      if (!tag) return;
-      btnDownload.disabled = true;
-      setDownloadStatus('pending', 'Downloading...');
-      try {
-        const res = await fetch('/api/download', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ tag })
-        });
-        const data = await res.json();
-        if (data.error) {
-          setDownloadStatus('err', data.error);
-        } else {
-          const release = releases.find(r => r.tag === tag);
-          if (release) release.downloaded = true;
-          setDownloadStatus('ok', 'Downloaded');
-        }
-      } catch (err) {
-        setDownloadStatus('err', err.message);
-      } finally {
-        btnDownload.disabled = false;
-      }
-    });
-
-    loadReleases();
-
-    // ---------- Chat ----------
-
-    const chatHistory = [];
-    const chatLog = document.getElementById('chat-log');
-    const chatForm = document.getElementById('chat-form');
-    const chatInput = document.getElementById('chat-input');
-
-    function appendChatMessage(role, text) {
-      const row = document.createElement('div');
-      row.className = 'chat-message ' + role;
-      const who = document.createElement('div');
-      who.className = 'who';
-      who.textContent = role === 'user' ? 'You' : 'Claude';
-      const body = document.createElement('div');
-      body.textContent = text;
-      row.appendChild(who);
-      row.appendChild(body);
-      chatLog.appendChild(row);
-      chatLog.scrollTop = chatLog.scrollHeight;
-      return body;
-    }
-
-    chatForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const message = chatInput.value.trim();
-      if (!message) return;
-      chatInput.value = '';
-      chatInput.disabled = true;
-
-      appendChatMessage('user', message);
-      chatHistory.push({ role: 'user', content: message });
-
-      const pendingBody = appendChatMessage('assistant', '...');
-
-      try {
-        const res = await fetch('/api/chat', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ messages: chatHistory })
-        });
-        const data = await res.json();
-        if (data.error) {
-          pendingBody.textContent = 'Error: ' + data.error;
-        } else {
-          pendingBody.textContent = data.reply;
-          chatHistory.push({ role: 'assistant', content: data.reply });
-        }
-      } catch (err) {
-        pendingBody.textContent = 'Network error: ' + err.message;
-      } finally {
-        chatInput.disabled = false;
-        chatInput.focus();
-      }
-    });
-  </script>
 </body>
 </html>
