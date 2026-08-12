@@ -146,7 +146,7 @@
       const res = await fetch(`/api/${PLATFORM}/chat`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ messages: chatHistory })
+        body: JSON.stringify({ messages: chatHistory, version: versionSelect.value })
       });
       const data = await res.json();
       if (data.error) {
