@@ -98,6 +98,23 @@ h1 span {
   cursor: not-allowed;
 }
 
+.btn-secondary {
+  padding: 9px 16px;
+  background: #fff;
+  color: #6C63FF;
+  border: 1px solid #6C63FF;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+  white-space: nowrap;
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background: #f1efff;
+}
+
 .status-badge {
   display: inline-block;
   padding: 3px 10px;

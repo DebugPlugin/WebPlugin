@@ -111,6 +111,41 @@
     updateChatHeading();
   }
 
+  // ---------- Share API call / screenshots with MCP ----------
+  // Pushes the current data to the server so the MCP tools get_last_api_call and
+  // get_screenshots (used by e.g. Claude Desktop) can read it. Shared per platform,
+  // not private — see NOTA in chat about this.
+  const shareMcpButton = document.getElementById('chat-share-mcp');
+  if (shareMcpButton) {
+    shareMcpButton.addEventListener('click', async () => {
+      const payload = {};
+
+      if (window.ApiTools) {
+        const last = ApiTools.getLastResponse();
+        if (last) payload.apiCall = last;
+      }
+
+      if (includeScreenshotsCheckbox && window.Screenshots) {
+        const images = Screenshots.getAll(includeScreenshotsCheckbox.dataset.storageKey);
+        if (images.length) payload.screenshots = images;
+      }
+
+      const originalLabel = shareMcpButton.textContent;
+      try {
+        const res = await fetch(`/api/${PLATFORM}/context`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        const data = await res.json();
+        shareMcpButton.textContent = data.error ? '⚠️ Error' : '✅ Shared!';
+      } catch (err) {
+        shareMcpButton.textContent = '⚠️ Error';
+      }
+      setTimeout(() => { shareMcpButton.textContent = originalLabel; }, 1600);
+    });
+  }
+
   function appendChatMessage(role, text) {
     const row = document.createElement('div');
     row.className = 'chat-message ' + role;
