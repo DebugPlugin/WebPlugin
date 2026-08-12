@@ -123,8 +123,6 @@
           hasExtraContext = true;
         }
       }
-      if (includeApiCallCheckbox) includeApiCallCheckbox.checked = false;
-      if (includeApiJsonCheckbox) includeApiJsonCheckbox.checked = false;
     }
 
     if (includeScreenshotsCheckbox && includeScreenshotsCheckbox.checked && window.Screenshots) {
@@ -133,14 +131,20 @@
         blocks.push({ type: 'image', source: { type: 'base64', media_type: img.mediaType, data: img.base64 } });
       });
       if (images.length) hasExtraContext = true;
-      includeScreenshotsCheckbox.checked = false;
     }
 
     blocks.push({ type: 'text', text: message });
     const outgoingContent = hasExtraContext ? blocks : message;
     chatHistory.push({ role: 'user', content: outgoingContent });
 
-    const pendingBody = appendChatMessage('assistant', '...');
+    const pendingBody = appendChatMessage('assistant', '');
+    pendingBody.classList.add('thinking');
+    let dots = 0;
+    pendingBody.textContent = 'Claude is thinking';
+    const thinkingTimer = setInterval(() => {
+      dots = (dots + 1) % 4;
+      pendingBody.textContent = 'Claude is thinking' + '.'.repeat(dots);
+    }, 400);
 
     try {
       const res = await fetch(`/api/${PLATFORM}/chat`, {
@@ -149,6 +153,8 @@
         body: JSON.stringify({ messages: chatHistory, version: versionSelect.value })
       });
       const data = await res.json();
+      clearInterval(thinkingTimer);
+      pendingBody.classList.remove('thinking');
       if (data.error) {
         pendingBody.textContent = 'Error: ' + data.error;
       } else {
@@ -156,6 +162,8 @@
         chatHistory.push({ role: 'assistant', content: data.reply });
       }
     } catch (err) {
+      clearInterval(thinkingTimer);
+      pendingBody.classList.remove('thinking');
       pendingBody.textContent = 'Network error: ' + err.message;
     } finally {
       chatInput.disabled = false;
