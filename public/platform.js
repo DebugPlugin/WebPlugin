@@ -12,10 +12,29 @@
     downloadStatus.classList.remove('hidden');
   }
 
+  const DOWNLOADED_KEY = `doopresta-downloaded-${PLATFORM}`;
+
+  function getLocallyDownloaded() {
+    try {
+      return new Set(JSON.parse(localStorage.getItem(DOWNLOADED_KEY) || '[]'));
+    } catch {
+      return new Set();
+    }
+  }
+
+  function markLocallyDownloaded(tag) {
+    const set = getLocallyDownloaded();
+    set.add(tag);
+    localStorage.setItem(DOWNLOADED_KEY, JSON.stringify([...set]));
+  }
+
   function refreshStatusForSelection() {
     const release = releases.find(r => r.tag === versionSelect.value);
+    const locallyDownloaded = getLocallyDownloaded().has(versionSelect.value);
     if (release && release.downloaded) {
       setDownloadStatus('ok', 'Downloaded');
+    } else if (locallyDownloaded) {
+      setDownloadStatus('ok', 'Already downloaded before (cached in this browser — no need to re-download)');
     } else {
       downloadStatus.classList.add('hidden');
     }
@@ -53,6 +72,7 @@
       } else {
         const release = releases.find(r => r.tag === tag);
         if (release) release.downloaded = true;
+        markLocallyDownloaded(tag);
         setDownloadStatus('ok', 'Downloaded');
       }
     } catch (err) {
@@ -73,6 +93,24 @@
   const includeApiCallCheckbox = document.getElementById('chat-include-api-call');
   const includeApiJsonCheckbox = document.getElementById('chat-include-api-json');
   const includeScreenshotsCheckbox = document.getElementById('chat-include-screenshots');
+  const chatModelSelect = document.getElementById('chat-model-select');
+  const chatHeading = document.getElementById('chat-heading');
+
+  const MODEL_LABELS = {
+    'claude-opus-5': 'Claude Opus 5',
+    'claude-sonnet-5': 'Claude Sonnet 5',
+    'claude-haiku-4-5': 'Claude Haiku 4.5',
+  };
+
+  function updateChatHeading() {
+    if (!chatHeading || !chatModelSelect) return;
+    chatHeading.textContent = `Chat with ${MODEL_LABELS[chatModelSelect.value] || chatModelSelect.value}`;
+  }
+
+  if (chatModelSelect) {
+    chatModelSelect.addEventListener('change', updateChatHeading);
+    updateChatHeading();
+  }
 
   function appendChatMessage(role, text) {
     const row = document.createElement('div');
@@ -150,7 +188,11 @@
       const res = await fetch(`/api/${PLATFORM}/chat`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ messages: chatHistory, version: versionSelect.value })
+        body: JSON.stringify({
+          messages: chatHistory,
+          version: versionSelect.value,
+          model: chatModelSelect ? chatModelSelect.value : undefined
+        })
       });
       const data = await res.json();
       clearInterval(thinkingTimer);
