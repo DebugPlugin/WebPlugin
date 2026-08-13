@@ -155,18 +155,28 @@
   async function refreshSharedStatus() {
     if (!sharedStatusBox) return;
     try {
-      const res = await fetch(`/api/${PLATFORM}/context`);
-      const ctx = await res.json();
-      if (!ctx.savedAt) {
-        sharedStatusBox.textContent = 'Nothing shared yet.';
-        return;
+      const [ctx, usage] = await Promise.all([
+        fetch(`/api/${PLATFORM}/context`).then(r => r.json()),
+        fetch('/api/redis-usage').then(r => r.json()).catch(() => ({ available: false }))
+      ]);
+
+      const lines = ctx.savedAt
+        ? [
+            `Shared at: ${new Date(ctx.savedAt).toLocaleString()}`,
+            `Selected version: ${ctx.selectedVersion || '—'}`,
+            `API call: ${ctx.apiCall ? `${ctx.apiCall.method} ${ctx.apiCall.url} (HTTP ${ctx.apiCall.status})` : '—'}`,
+            `Screenshots: ${ctx.screenshotCount}`
+          ]
+        : ['Nothing shared yet.'];
+
+      if (usage.available) {
+        const usedMb = (usage.usedBytes / (1024 * 1024)).toFixed(2);
+        const limitMb = (usage.limitBytes / (1024 * 1024)).toFixed(0);
+        const freeMb = ((usage.limitBytes - usage.usedBytes) / (1024 * 1024)).toFixed(2);
+        lines.push('', `Redis storage: ${usedMb} MB used of ${limitMb} MB (${freeMb} MB free)`);
       }
-      sharedStatusBox.textContent = [
-        `Shared at: ${new Date(ctx.savedAt).toLocaleString()}`,
-        `Selected version: ${ctx.selectedVersion || '—'}`,
-        `API call: ${ctx.apiCall ? `${ctx.apiCall.method} ${ctx.apiCall.url} (HTTP ${ctx.apiCall.status})` : '—'}`,
-        `Screenshots: ${ctx.screenshotCount}`
-      ].join('\n');
+
+      sharedStatusBox.textContent = lines.join('\n');
     } catch (err) {
       sharedStatusBox.textContent = 'Could not load status: ' + err.message;
     }
