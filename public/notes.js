@@ -13,4 +13,14 @@
     if (saved !== null) ta.value = saved;
     ta.addEventListener("input", () => localStorage.setItem(key, ta.value));
   });
+
+  window.Notes = {
+    resetAll() {
+      document.querySelectorAll(".notes-textarea").forEach((ta) => {
+        const key = ta.dataset.storageKey;
+        if (key) localStorage.removeItem(key);
+        ta.value = "";
+      });
+    },
+  };
 })();

@@ -1,5 +1,6 @@
 window.Screenshots = (function () {
   const getters = {};
+  const resetters = {};
 
   function resizeImage(file, maxDim, quality) {
     return new Promise((resolve, reject) => {
@@ -92,11 +93,21 @@ window.Screenshots = (function () {
           return m ? { mediaType: m[1], base64: m[2] } : null;
         })
         .filter(Boolean);
+
+    resetters[storageKey] = () => {
+      for (let i = 0; i < items.length; i++) items[i] = null;
+      persist();
+      render();
+    };
   }
 
   function getAll(storageKey) {
     return getters[storageKey] ? getters[storageKey]() : [];
   }
 
-  return { mount, getAll };
+  function resetAll(storageKey) {
+    if (resetters[storageKey]) resetters[storageKey]();
+  }
+
+  return { mount, getAll, resetAll };
 })();

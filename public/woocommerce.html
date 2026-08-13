@@ -25,38 +25,58 @@
         </div>
 
         <div class="card">
-          <h2 id="chat-heading">Chat with Claude Sonnet 5</h2>
-          <p class="hint">Ask a question below — the selected version downloads automatically if needed.</p>
-          <div class="version-row" style="margin-bottom: 14px;">
-            <label for="chat-model-select" style="font-size: 12px; color: #666;">Model:</label>
-            <select id="chat-model-select" class="param-select">
-              <option value="claude-sonnet-5" selected>Claude Sonnet 5</option>
-              <option value="claude-opus-5">Claude Opus 5</option>
-            </select>
-            <button type="button" id="chat-share-mcp" class="btn-secondary">📤 Share with MCP</button>
+          <h2>Share with Claude (MCP)</h2>
+          <p class="hint">Downloads the selected version and shares it — plus the last API call/screenshots — so Claude Desktop/claude.ai can read it.</p>
+          <button type="button" id="chat-share-mcp" class="btn-secondary">📤 Share with MCP</button>
+        </div>
+
+        <button class="section-toggle" id="wc-section-chat-toggle" type="button" data-target="wc-section-chat-body">
+          <span>Chat</span>
+          <span class="section-chevron">▼</span>
+        </button>
+        <div class="section-body" id="wc-section-chat-body">
+          <div class="card">
+            <h2 id="chat-heading">Chat with Claude Sonnet 5</h2>
+            <p class="hint">Ask a question below — the selected version downloads automatically if needed.</p>
+            <div class="version-row" style="margin-bottom: 14px;">
+              <label for="chat-model-select" style="font-size: 12px; color: #666;">Model:</label>
+              <select id="chat-model-select" class="param-select">
+                <option value="claude-sonnet-5" selected>Claude Sonnet 5</option>
+                <option value="claude-opus-5">Claude Opus 5</option>
+              </select>
+            </div>
+            <div id="chat-log"></div>
+            <p class="privacy-warning">⚠️ Don't include order/customer data — catalog and config only.</p>
+            <label class="checkbox-row">
+              <input type="checkbox" id="chat-include-api-call">
+              Include last API call (method, URL, headers — tokens redacted) in this message
+            </label>
+            <label class="checkbox-row">
+              <input type="checkbox" id="chat-include-api-json">
+              Include last API response (JSON) in this message
+            </label>
+            <label class="checkbox-row">
+              <input type="checkbox" id="chat-include-screenshots" data-storage-key="wc-screenshots">
+              Include screenshots (from the Screenshots section) in this message
+            </label>
+            <form id="chat-form" class="chat-form">
+              <input id="chat-input" type="text" class="chat-input" placeholder="Ask something about the plugin code..." autocomplete="off">
+              <button type="submit" class="btn-primary">Send</button>
+            </form>
           </div>
-          <div id="chat-log"></div>
-          <p class="privacy-warning">⚠️ Don't include order/customer data — catalog and config only.</p>
-          <label class="checkbox-row">
-            <input type="checkbox" id="chat-include-api-call">
-            Include last API call (method, URL, headers — tokens redacted) in this message
-          </label>
-          <label class="checkbox-row">
-            <input type="checkbox" id="chat-include-api-json">
-            Include last API response (JSON) in this message
-          </label>
-          <label class="checkbox-row">
-            <input type="checkbox" id="chat-include-screenshots" data-storage-key="wc-screenshots">
-            Include screenshots (from the Screenshots section) in this message
-          </label>
-          <form id="chat-form" class="chat-form">
-            <input id="chat-input" type="text" class="chat-input" placeholder="Ask something about the plugin code..." autocomplete="off">
-            <button type="submit" class="btn-primary">Send</button>
-          </form>
         </div>
       </div>
 
       <div class="page-col">
+        <div class="card">
+          <h2>Reset browser data</h2>
+          <p class="hint">Clears data saved locally in this browser (separate from "Shared with MCP" below).</p>
+          <label class="checkbox-row"><input type="checkbox" id="reset-notes" checked> Notes</label>
+          <label class="checkbox-row"><input type="checkbox" id="reset-screenshots" checked> Screenshots</label>
+          <label class="checkbox-row"><input type="checkbox" id="reset-api" checked> API call history</label>
+          <button type="button" id="btn-reset-local" class="btn-secondary">Reset selected</button>
+        </div>
+
         <button class="section-toggle" id="wc-section-a-toggle" type="button" data-target="wc-section-a-body">
           <span>Store &amp; API tools</span>
           <span class="section-chevron">▼</span>

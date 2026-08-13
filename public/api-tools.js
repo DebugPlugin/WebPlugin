@@ -5,6 +5,15 @@ window.ApiTools = (function () {
     return lastResponse;
   }
 
+  function reset() {
+    lastResponse = null;
+    document.querySelectorAll('[id^="response-box-"]').forEach((el) => el.classList.add("hidden"));
+    document.querySelectorAll('[id^="status-badge-"]').forEach((el) => el.classList.add("hidden"));
+    document.querySelectorAll('[id^="time-taken-"]').forEach((el) => el.classList.add("hidden"));
+    document.querySelectorAll('[id^="btn-copy-"]').forEach((el) => el.classList.add("hidden"));
+    document.querySelectorAll('[id^="response-code-"]').forEach((el) => (el.textContent = ""));
+  }
+
   function normalizeUrl(raw) {
     return (raw || "").trim().replace(/^https?:\/\//, "").replace(/\/+$/, "");
   }
@@ -189,5 +198,5 @@ window.ApiTools = (function () {
     });
   }
 
-  return { normalizeUrl, basicAuth, callProxy, mount, getLastResponse };
+  return { normalizeUrl, basicAuth, callProxy, mount, getLastResponse, reset };
 })();

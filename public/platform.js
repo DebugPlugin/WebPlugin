@@ -17,6 +17,28 @@
 
   loadReleases();
 
+  // ---------- Reset browser data (Notes / Screenshots / API call history) ----------
+
+  const resetLocalBtn = document.getElementById('btn-reset-local');
+  if (resetLocalBtn) {
+    resetLocalBtn.addEventListener('click', () => {
+      const wantNotes = document.getElementById('reset-notes')?.checked;
+      const wantScreenshots = document.getElementById('reset-screenshots')?.checked;
+      const wantApi = document.getElementById('reset-api')?.checked;
+      const screenshotsCheckbox = document.getElementById('chat-include-screenshots');
+
+      if (wantNotes && window.Notes) window.Notes.resetAll();
+      if (wantScreenshots && window.Screenshots && screenshotsCheckbox) {
+        window.Screenshots.resetAll(screenshotsCheckbox.dataset.storageKey);
+      }
+      if (wantApi && window.ApiTools) window.ApiTools.reset();
+
+      const originalLabel = resetLocalBtn.textContent;
+      resetLocalBtn.textContent = '✅ Reset!';
+      setTimeout(() => { resetLocalBtn.textContent = originalLabel; }, 1400);
+    });
+  }
+
   // ---------- Chat ----------
 
   const chatHistory = [];
