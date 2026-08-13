@@ -1,6 +1,10 @@
 {
   "rewrites": [
     { "source": "/api/:path*", "destination": "/api" },
-    { "source": "/mcp", "destination": "/api" }
+    { "source": "/mcp", "destination": "/api" },
+    { "source": "/authorize", "destination": "/api" },
+    { "source": "/token", "destination": "/api" },
+    { "source": "/register", "destination": "/api" },
+    { "source": "/.well-known/:path*", "destination": "/api" }
   ]
 }
