@@ -118,7 +118,7 @@
   const shareMcpButton = document.getElementById('chat-share-mcp');
   if (shareMcpButton) {
     shareMcpButton.addEventListener('click', async () => {
-      const payload = {};
+      const payload = { selectedVersion: versionSelect.value };
 
       if (window.ApiTools) {
         const last = ApiTools.getLastResponse();
