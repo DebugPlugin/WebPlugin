@@ -26,8 +26,50 @@
 
         <div class="card">
           <h2>Share with Claude (MCP)</h2>
-          <p class="hint">Downloads the selected version and shares it — plus the last API call/screenshots — so Claude Desktop/claude.ai can read it.</p>
+          <p class="hint">Downloads the selected version and shares it with Claude Desktop/claude.ai.</p>
+          <label class="checkbox-row">
+            <input type="checkbox" id="chat-include-screenshots" data-storage-key="ps-screenshots" checked>
+            Include screenshots (from the Screenshots section)
+          </label>
           <button type="button" id="chat-share-mcp" class="btn-secondary">📤 Share with MCP</button>
+          <div class="response-box" style="margin-top: 14px;"><pre id="shared-mcp-status">Loading...</pre></div>
+          <button type="button" id="shared-mcp-reset" class="btn-secondary">Reset shared data</button>
+        </div>
+      </div>
+
+      <div class="page-col">
+        <div class="card">
+          <h2>Reset browser data</h2>
+          <p class="hint">Clears data saved locally in this browser (separate from "Shared with MCP" above).</p>
+          <label class="checkbox-row"><input type="checkbox" id="reset-notes" checked> Notes</label>
+          <label class="checkbox-row"><input type="checkbox" id="reset-screenshots" checked> Screenshots</label>
+          <button type="button" id="btn-reset-local" class="btn-secondary">Reset selected</button>
+        </div>
+
+        <button class="section-toggle" id="ps-section-notes-toggle" type="button" data-target="ps-section-notes-body">
+          <span>Notes</span>
+          <span class="section-chevron">▼</span>
+        </button>
+        <div class="section-body" id="ps-section-notes-body">
+          <div class="card">
+            <h2>Notes</h2>
+            <p class="hint">Free text — saved automatically in this browser.</p>
+            <p class="privacy-warning">⚠️ Don't include order/customer data — catalog and config only.</p>
+            <textarea id="ps-notes" class="notes-textarea" data-storage-key="ps-notes" placeholder="Write anything here..."></textarea>
+          </div>
+        </div>
+
+        <button class="section-toggle" id="ps-section-screenshots-toggle" type="button" data-target="ps-section-screenshots-body">
+          <span>Screenshots</span>
+          <span class="section-chevron">▼</span>
+        </button>
+        <div class="section-body" id="ps-section-screenshots-body">
+          <div class="card">
+            <h2>Screenshots</h2>
+            <p class="hint">Up to 4 images, saved in this browser.</p>
+            <p class="privacy-warning">⚠️ Don't include order/customer data — catalog and config only.</p>
+            <div id="ps-screenshots" class="screenshot-grid"></div>
+          </div>
         </div>
 
         <button class="section-toggle" id="ps-section-chat-toggle" type="button" data-target="ps-section-chat-body">
@@ -46,62 +88,10 @@
               </select>
             </div>
             <div id="chat-log"></div>
-            <p class="privacy-warning">⚠️ Don't include order/customer data — catalog and config only.</p>
-            <label class="checkbox-row">
-              <input type="checkbox" id="chat-include-screenshots" data-storage-key="ps-screenshots">
-              Include screenshots (from the Screenshots section) in this message
-            </label>
             <form id="chat-form" class="chat-form">
               <input id="chat-input" type="text" class="chat-input" placeholder="Ask something about the plugin code..." autocomplete="off">
               <button type="submit" class="btn-primary">Send</button>
             </form>
-          </div>
-        </div>
-      </div>
-
-      <div class="page-col">
-        <div class="card">
-          <h2>Reset browser data</h2>
-          <p class="hint">Clears data saved locally in this browser (separate from "Shared with MCP" below).</p>
-          <label class="checkbox-row"><input type="checkbox" id="reset-notes" checked> Notes</label>
-          <label class="checkbox-row"><input type="checkbox" id="reset-screenshots" checked> Screenshots</label>
-          <button type="button" id="btn-reset-local" class="btn-secondary">Reset selected</button>
-        </div>
-
-        <button class="section-toggle" id="ps-section-notes-toggle" type="button" data-target="ps-section-notes-body">
-          <span>Notes</span>
-          <span class="section-chevron">▼</span>
-        </button>
-        <div class="section-body" id="ps-section-notes-body">
-          <div class="card">
-            <h2>Notes</h2>
-            <p class="hint">Free text — saved automatically in this browser.</p>
-            <textarea id="ps-notes" class="notes-textarea" data-storage-key="ps-notes" placeholder="Write anything here..."></textarea>
-          </div>
-        </div>
-
-        <button class="section-toggle" id="ps-section-screenshots-toggle" type="button" data-target="ps-section-screenshots-body">
-          <span>Screenshots</span>
-          <span class="section-chevron">▼</span>
-        </button>
-        <div class="section-body" id="ps-section-screenshots-body">
-          <div class="card">
-            <h2>Screenshots</h2>
-            <p class="hint">Up to 4 images, saved in this browser. Check "Include screenshots" in the chat to send them to Claude as visual context.</p>
-            <div id="ps-screenshots" class="screenshot-grid"></div>
-          </div>
-        </div>
-
-        <button class="section-toggle" id="ps-section-shared-toggle" type="button" data-target="ps-section-shared-body">
-          <span>Shared with MCP</span>
-          <span class="section-chevron">▼</span>
-        </button>
-        <div class="section-body" id="ps-section-shared-body">
-          <div class="card">
-            <h2>Shared with MCP</h2>
-            <p class="hint">What Claude Desktop/claude.ai can currently read, from the last "Share with MCP" click.</p>
-            <div class="response-box"><pre id="shared-mcp-status">Loading...</pre></div>
-            <button type="button" id="shared-mcp-reset" class="btn-secondary">Reset shared data</button>
           </div>
         </div>
       </div>

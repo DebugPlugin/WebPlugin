@@ -91,12 +91,13 @@
         shareMcpButton.textContent = 'Sharing...';
         const payload = { selectedVersion: tag };
 
-        if (window.ApiTools) {
+        const wantsApiCall = (includeApiCallCheckbox && includeApiCallCheckbox.checked) || (includeApiJsonCheckbox && includeApiJsonCheckbox.checked);
+        if (wantsApiCall && window.ApiTools) {
           const last = ApiTools.getLastResponse();
           if (last) payload.apiCall = last;
         }
 
-        if (includeScreenshotsCheckbox && window.Screenshots) {
+        if (includeScreenshotsCheckbox && includeScreenshotsCheckbox.checked && window.Screenshots) {
           const images = Screenshots.getAll(includeScreenshotsCheckbox.dataset.storageKey);
           if (images.length) payload.screenshots = images;
         }
@@ -189,45 +190,7 @@
     chatInput.disabled = true;
 
     appendChatMessage('user', message);
-
-    const blocks = [];
-    let hasExtraContext = false;
-
-    const wantsApiCall = includeApiCallCheckbox && includeApiCallCheckbox.checked;
-    const wantsApiJson = includeApiJsonCheckbox && includeApiJsonCheckbox.checked;
-
-    if ((wantsApiCall || wantsApiJson) && window.ApiTools) {
-      const last = ApiTools.getLastResponse();
-      if (last) {
-        if (wantsApiCall) {
-          const headerLines = Object.entries(last.headers || {}).map(([k, v]) => `${k}: ${v}`).join('\n');
-          blocks.push({
-            type: 'text',
-            text: `[Context: API call made — "${last.title}"]\n${last.method} ${last.url}\n${headerLines}`
-          });
-          hasExtraContext = true;
-        }
-        if (wantsApiJson) {
-          blocks.push({
-            type: 'text',
-            text: `[Context: API response from "${last.title}", HTTP ${last.status}]\n\`\`\`json\n${last.json}\n\`\`\``
-          });
-          hasExtraContext = true;
-        }
-      }
-    }
-
-    if (includeScreenshotsCheckbox && includeScreenshotsCheckbox.checked && window.Screenshots) {
-      const images = Screenshots.getAll(includeScreenshotsCheckbox.dataset.storageKey);
-      images.forEach((img) => {
-        blocks.push({ type: 'image', source: { type: 'base64', media_type: img.mediaType, data: img.base64 } });
-      });
-      if (images.length) hasExtraContext = true;
-    }
-
-    blocks.push({ type: 'text', text: message });
-    const outgoingContent = hasExtraContext ? blocks : message;
-    chatHistory.push({ role: 'user', content: outgoingContent });
+    chatHistory.push({ role: 'user', content: message });
 
     const pendingBody = appendChatMessage('assistant', '');
     pendingBody.classList.add('thinking');
