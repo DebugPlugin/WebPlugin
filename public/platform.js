@@ -2,47 +2,10 @@
   const PLATFORM = window.PLATFORM;
 
   const versionSelect = document.getElementById('version-select');
-  const btnDownload = document.getElementById('btn-download');
-  const downloadStatus = document.getElementById('download-status');
-  let releases = [];
-
-  function setDownloadStatus(kind, text) {
-    downloadStatus.className = 'status-badge ' + kind;
-    downloadStatus.textContent = text;
-    downloadStatus.classList.remove('hidden');
-  }
-
-  const DOWNLOADED_KEY = `doopresta-downloaded-${PLATFORM}`;
-
-  function getLocallyDownloaded() {
-    try {
-      return new Set(JSON.parse(localStorage.getItem(DOWNLOADED_KEY) || '[]'));
-    } catch {
-      return new Set();
-    }
-  }
-
-  function markLocallyDownloaded(tag) {
-    const set = getLocallyDownloaded();
-    set.add(tag);
-    localStorage.setItem(DOWNLOADED_KEY, JSON.stringify([...set]));
-  }
-
-  function refreshStatusForSelection() {
-    const release = releases.find(r => r.tag === versionSelect.value);
-    const locallyDownloaded = getLocallyDownloaded().has(versionSelect.value);
-    if (release && release.downloaded) {
-      setDownloadStatus('ok', 'Downloaded');
-    } else if (locallyDownloaded) {
-      setDownloadStatus('ok', 'Already downloaded before (cached in this browser — no need to re-download)');
-    } else {
-      downloadStatus.classList.add('hidden');
-    }
-  }
 
   async function loadReleases() {
     const res = await fetch(`/api/${PLATFORM}/releases`);
-    releases = await res.json();
+    const releases = await res.json();
     versionSelect.innerHTML = '';
     releases.forEach(r => {
       const opt = document.createElement('option');
@@ -50,37 +13,7 @@
       opt.textContent = r.name ? `${r.tag} — ${r.name}` : r.tag;
       versionSelect.appendChild(opt);
     });
-    refreshStatusForSelection();
   }
-
-  versionSelect.addEventListener('change', refreshStatusForSelection);
-
-  btnDownload.addEventListener('click', async () => {
-    const tag = versionSelect.value;
-    if (!tag) return;
-    btnDownload.disabled = true;
-    setDownloadStatus('pending', 'Downloading...');
-    try {
-      const res = await fetch(`/api/${PLATFORM}/download`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ tag })
-      });
-      const data = await res.json();
-      if (data.error) {
-        setDownloadStatus('err', data.error);
-      } else {
-        const release = releases.find(r => r.tag === tag);
-        if (release) release.downloaded = true;
-        markLocallyDownloaded(tag);
-        setDownloadStatus('ok', 'Downloaded');
-      }
-    } catch (err) {
-      setDownloadStatus('err', err.message);
-    } finally {
-      btnDownload.disabled = false;
-    }
-  });
 
   loadReleases();
 
@@ -118,32 +51,47 @@
   const shareMcpButton = document.getElementById('chat-share-mcp');
   if (shareMcpButton) {
     shareMcpButton.addEventListener('click', async () => {
-      const payload = { selectedVersion: versionSelect.value };
-
-      if (window.ApiTools) {
-        const last = ApiTools.getLastResponse();
-        if (last) payload.apiCall = last;
-      }
-
-      if (includeScreenshotsCheckbox && window.Screenshots) {
-        const images = Screenshots.getAll(includeScreenshotsCheckbox.dataset.storageKey);
-        if (images.length) payload.screenshots = images;
-      }
-
       const originalLabel = shareMcpButton.textContent;
+      shareMcpButton.disabled = true;
       try {
+        const tag = versionSelect.value;
+        if (tag) {
+          shareMcpButton.textContent = '⬇️ Downloading...';
+          const dlRes = await fetch(`/api/${PLATFORM}/download`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ tag })
+          });
+          const dlData = await dlRes.json();
+          if (dlData.error) throw new Error(dlData.error);
+        }
+
+        shareMcpButton.textContent = 'Sharing...';
+        const payload = { selectedVersion: tag };
+
+        if (window.ApiTools) {
+          const last = ApiTools.getLastResponse();
+          if (last) payload.apiCall = last;
+        }
+
+        if (includeScreenshotsCheckbox && window.Screenshots) {
+          const images = Screenshots.getAll(includeScreenshotsCheckbox.dataset.storageKey);
+          if (images.length) payload.screenshots = images;
+        }
+
         const res = await fetch(`/api/${PLATFORM}/context`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
         });
         const data = await res.json();
-        shareMcpButton.textContent = data.error ? '⚠️ Error' : '✅ Shared!';
+        shareMcpButton.textContent = data.error ? '⚠️ Error' : '✅ Downloaded & Shared!';
         if (!data.error) refreshSharedStatus();
       } catch (err) {
         shareMcpButton.textContent = '⚠️ Error';
+      } finally {
+        setTimeout(() => { shareMcpButton.textContent = originalLabel; shareMcpButton.disabled = false; }, 1800);
       }
-      setTimeout(() => { shareMcpButton.textContent = originalLabel; }, 1600);
     });
   }
 
