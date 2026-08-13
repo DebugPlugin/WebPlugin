@@ -135,10 +135,9 @@
       const lines = ctx.savedAt
         ? [
             `Shared at: ${new Date(ctx.savedAt).toLocaleString()}`,
-            `Selected version: ${ctx.selectedVersion || '—'}`,
+            `Selected version: ${ctx.includeCode ? (ctx.selectedVersion || '—') : 'not shared'}`,
             `API call: ${ctx.apiCall ? `${ctx.apiCall.method} ${ctx.apiCall.url} (HTTP ${ctx.apiCall.status})` : '—'}`,
-            `Screenshots: ${ctx.screenshotCount}`,
-            `Plugin code shared: ${ctx.includeCode ? 'yes' : 'no'}`
+            `Screenshots: ${ctx.screenshotCount}`
           ]
         : ['Nothing shared yet.'];
 
