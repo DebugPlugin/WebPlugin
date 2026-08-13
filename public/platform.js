@@ -139,12 +139,52 @@
         });
         const data = await res.json();
         shareMcpButton.textContent = data.error ? '⚠️ Error' : '✅ Shared!';
+        if (!data.error) refreshSharedStatus();
       } catch (err) {
         shareMcpButton.textContent = '⚠️ Error';
       }
       setTimeout(() => { shareMcpButton.textContent = originalLabel; }, 1600);
     });
   }
+
+  // ---------- "Shared with MCP" status panel ----------
+
+  const sharedStatusBox = document.getElementById('shared-mcp-status');
+  const sharedResetBtn = document.getElementById('shared-mcp-reset');
+
+  async function refreshSharedStatus() {
+    if (!sharedStatusBox) return;
+    try {
+      const res = await fetch(`/api/${PLATFORM}/context`);
+      const ctx = await res.json();
+      if (!ctx.savedAt) {
+        sharedStatusBox.textContent = 'Nothing shared yet.';
+        return;
+      }
+      sharedStatusBox.textContent = [
+        `Shared at: ${new Date(ctx.savedAt).toLocaleString()}`,
+        `Selected version: ${ctx.selectedVersion || '—'}`,
+        `API call: ${ctx.apiCall ? `${ctx.apiCall.method} ${ctx.apiCall.url} (HTTP ${ctx.apiCall.status})` : '—'}`,
+        `Screenshots: ${ctx.screenshotCount}`
+      ].join('\n');
+    } catch (err) {
+      sharedStatusBox.textContent = 'Could not load status: ' + err.message;
+    }
+  }
+
+  if (sharedResetBtn) {
+    sharedResetBtn.addEventListener('click', async () => {
+      sharedResetBtn.disabled = true;
+      try {
+        await fetch(`/api/${PLATFORM}/context/reset`, { method: 'POST' });
+        await refreshSharedStatus();
+      } finally {
+        sharedResetBtn.disabled = false;
+      }
+    });
+  }
+
+  refreshSharedStatus();
 
   function appendChatMessage(role, text) {
     const row = document.createElement('div');

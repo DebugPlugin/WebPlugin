@@ -115,6 +115,19 @@
             <div id="wc-screenshots" class="screenshot-grid"></div>
           </div>
         </div>
+
+        <button class="section-toggle" id="wc-section-shared-toggle" type="button" data-target="wc-section-shared-body">
+          <span>Shared with MCP</span>
+          <span class="section-chevron">▼</span>
+        </button>
+        <div class="section-body" id="wc-section-shared-body">
+          <div class="card">
+            <h2>Shared with MCP</h2>
+            <p class="hint">What Claude Desktop/claude.ai can currently read, from the last "Share with MCP" click.</p>
+            <div class="response-box"><pre id="shared-mcp-status">Loading...</pre></div>
+            <button type="button" id="shared-mcp-reset" class="btn-secondary">Reset shared data</button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
