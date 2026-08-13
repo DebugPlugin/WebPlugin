@@ -89,7 +89,8 @@
         }
 
         shareMcpButton.textContent = 'Sharing...';
-        const payload = { selectedVersion: tag };
+        const includeCodeCheckbox = document.getElementById('chat-include-code');
+        const payload = { selectedVersion: tag, includeCode: includeCodeCheckbox ? includeCodeCheckbox.checked : true };
 
         const wantsApiCall = (includeApiCallCheckbox && includeApiCallCheckbox.checked) || (includeApiJsonCheckbox && includeApiJsonCheckbox.checked);
         if (wantsApiCall && window.ApiTools) {
@@ -136,7 +137,8 @@
             `Shared at: ${new Date(ctx.savedAt).toLocaleString()}`,
             `Selected version: ${ctx.selectedVersion || '—'}`,
             `API call: ${ctx.apiCall ? `${ctx.apiCall.method} ${ctx.apiCall.url} (HTTP ${ctx.apiCall.status})` : '—'}`,
-            `Screenshots: ${ctx.screenshotCount}`
+            `Screenshots: ${ctx.screenshotCount}`,
+            `Plugin code shared: ${ctx.includeCode ? 'yes' : 'no'}`
           ]
         : ['Nothing shared yet.'];
 
