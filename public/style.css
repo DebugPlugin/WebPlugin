@@ -226,7 +226,7 @@ h1 span {
 
 .chat-input:focus {
   outline: none;
-  border-color: var(--brand);
+  border-color: var(--yellow);
 }
 
 .back-link {
@@ -262,7 +262,7 @@ h1 span {
 }
 
 .platform-card:hover {
-  border-color: var(--brand);
+  border-color: var(--yellow);
   transform: translateY(-2px);
 }
 
@@ -295,10 +295,14 @@ h1 span {
 
 .doofinder-logo {
   font-weight: 800;
-  font-size: 22px;
+  font-size: 34px;
   letter-spacing: 0.5px;
   color: var(--brand);
   margin-bottom: 24px;
+}
+
+.doofinder-logo .oo {
+  color: var(--yellow);
 }
 
 .hero {
@@ -433,7 +437,7 @@ h1 span {
 
 .notes-textarea:focus {
   outline: none;
-  border-color: var(--brand);
+  border-color: var(--yellow);
 }
 
 /* Screenshots */
@@ -470,7 +474,7 @@ h1 span {
 }
 
 .screenshot-preview:hover {
-  border-color: var(--brand);
+  border-color: var(--yellow);
 }
 
 .screenshot-preview:not(.empty) {
@@ -549,7 +553,7 @@ h1 span {
 
 .field-row input:focus {
   outline: none;
-  border-color: var(--brand);
+  border-color: var(--yellow);
 }
 
 /* API call accordions */
