@@ -1,3 +1,12 @@
+:root {
+  --brand: #1B1851;
+  --brand-hover: #322c7a;
+  --brand-disabled: #a7a3c9;
+  --brand-tint: #edecf7;
+  --brand-tint-border: #d7d4ec;
+  --brand-tint-hover: #e2e0f3;
+}
+
 *, *::before, *::after {
   box-sizing: border-box;
   margin: 0;
@@ -25,7 +34,7 @@ h1 {
 }
 
 h1 span {
-  color: #6C63FF;
+  color: var(--brand);
 }
 
 .subtitle {
@@ -45,7 +54,7 @@ h1 span {
 .card h2 {
   font-size: 13px;
   font-weight: 700;
-  color: #6C63FF;
+  color: var(--brand);
   text-transform: uppercase;
   letter-spacing: 0.05em;
   margin-bottom: 4px;
@@ -78,7 +87,7 @@ h1 span {
 
 .btn-primary {
   padding: 9px 16px;
-  background: #6C63FF;
+  background: var(--brand);
   color: #fff;
   border: none;
   border-radius: 6px;
@@ -90,19 +99,19 @@ h1 span {
 }
 
 .btn-primary:hover:not(:disabled) {
-  background: #574fd6;
+  background: var(--brand-hover);
 }
 
 .btn-primary:disabled {
-  background: #c4c1f7;
+  background: var(--brand-disabled);
   cursor: not-allowed;
 }
 
 .btn-secondary {
   padding: 9px 16px;
   background: #fff;
-  color: #6C63FF;
-  border: 1px solid #6C63FF;
+  color: var(--brand);
+  border: 1px solid var(--brand);
   border-radius: 6px;
   font-size: 14px;
   font-weight: 600;
@@ -112,7 +121,7 @@ h1 span {
 }
 
 .btn-secondary:hover:not(:disabled) {
-  background: #f1efff;
+  background: var(--brand-tint);
 }
 
 .status-badge {
@@ -175,7 +184,7 @@ h1 span {
 }
 
 .chat-message.assistant .who {
-  color: #6C63FF;
+  color: var(--brand);
 }
 
 .chat-message .thinking {
@@ -205,12 +214,12 @@ h1 span {
 
 .chat-input:focus {
   outline: none;
-  border-color: #6C63FF;
+  border-color: var(--brand);
 }
 
 .back-link {
   display: inline-block;
-  color: #6C63FF;
+  color: var(--brand);
   text-decoration: none;
   font-size: 13px;
   font-weight: 600;
@@ -241,7 +250,7 @@ h1 span {
 }
 
 .platform-card:hover {
-  border-color: #6C63FF;
+  border-color: var(--brand);
   transform: translateY(-2px);
 }
 
@@ -273,32 +282,11 @@ h1 span {
 /* ---------- Doofinder brand mark ---------- */
 
 .doofinder-logo {
-  display: inline-flex;
-  align-items: center;
-  gap: 3px;
-  background: #1B1851;
-  color: #fff;
-  padding: 9px 16px;
-  border-radius: 8px;
   font-weight: 800;
-  font-size: 19px;
+  font-size: 22px;
   letter-spacing: 0.5px;
+  color: var(--brand);
   margin-bottom: 24px;
-}
-
-.doofinder-logo .oo {
-  display: inline-flex;
-  gap: 2px;
-  margin: 0 1px;
-}
-
-.doofinder-logo .oo i {
-  width: 13px;
-  height: 13px;
-  border: 3px solid #FFF031;
-  border-radius: 50%;
-  display: inline-block;
-  font-style: normal;
 }
 
 .platform-card .name {
@@ -335,13 +323,13 @@ h1 span {
   justify-content: space-between;
   width: 100%;
   padding: 14px 18px;
-  background: #f2f1ff;
-  border: 1px solid #e0deff;
+  background: var(--brand-tint);
+  border: 1px solid var(--brand-tint-border);
   border-radius: 10px;
   cursor: pointer;
   font-size: 14px;
   font-weight: 700;
-  color: #4a42d4;
+  color: var(--brand);
   text-align: left;
   margin-top: 16px;
 }
@@ -351,7 +339,7 @@ h1 span {
 }
 
 .section-toggle:hover {
-  background: #eae8ff;
+  background: var(--brand-tint-hover);
 }
 
 .section-chevron {
@@ -388,7 +376,7 @@ h1 span {
 
 .notes-textarea:focus {
   outline: none;
-  border-color: #6C63FF;
+  border-color: var(--brand);
 }
 
 /* Screenshots */
@@ -425,7 +413,7 @@ h1 span {
 }
 
 .screenshot-preview:hover {
-  border-color: #6C63FF;
+  border-color: var(--brand);
 }
 
 .screenshot-preview:not(.empty) {
@@ -504,7 +492,7 @@ h1 span {
 
 .field-row input:focus {
   outline: none;
-  border-color: #6C63FF;
+  border-color: var(--brand);
 }
 
 /* API call accordions */
@@ -530,7 +518,7 @@ h1 span {
 .accordion-title {
   font-size: 13px;
   font-weight: 700;
-  color: #6C63FF;
+  color: var(--brand);
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
@@ -605,7 +593,7 @@ h1 span {
 .btn-call {
   flex: 1;
   padding: 9px 16px;
-  background: #6C63FF;
+  background: var(--brand);
   color: #fff;
   border: none;
   border-radius: 6px;
@@ -616,19 +604,19 @@ h1 span {
 }
 
 .btn-call:hover:not(:disabled) {
-  background: #574fd6;
+  background: var(--brand-hover);
 }
 
 .btn-call:disabled {
-  background: #c4c1f7;
+  background: var(--brand-disabled);
   cursor: not-allowed;
 }
 
 .btn-curl {
   padding: 9px 12px;
   background: #fff;
-  color: #6C63FF;
-  border: 1.5px solid #6C63FF;
+  color: var(--brand);
+  border: 1.5px solid var(--brand);
   border-radius: 6px;
   font-size: 13px;
   font-weight: 600;
@@ -638,7 +626,7 @@ h1 span {
 }
 
 .btn-curl:hover {
-  background: #6C63FF;
+  background: var(--brand);
   color: #fff;
 }
 
@@ -679,8 +667,8 @@ h1 span {
   margin-top: 8px;
   padding: 7px;
   background: #fff;
-  color: #6C63FF;
-  border: 1.5px solid #6C63FF;
+  color: var(--brand);
+  border: 1.5px solid var(--brand);
   border-radius: 6px;
   font-size: 13px;
   font-weight: 600;
@@ -689,6 +677,6 @@ h1 span {
 }
 
 .btn-copy:hover {
-  background: #6C63FF;
+  background: var(--brand);
   color: #fff;
 }
