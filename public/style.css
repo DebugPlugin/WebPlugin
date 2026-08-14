@@ -1,10 +1,16 @@
 :root {
-  --brand: #1B1851;
-  --brand-hover: #322c7a;
-  --brand-disabled: #a7a3c9;
-  --brand-tint: #edecf7;
-  --brand-tint-border: #d7d4ec;
-  --brand-tint-hover: #e2e0f3;
+  --brand: #5B4FE0;
+  --brand-hover: #4a3fc9;
+  --brand-disabled: #bcb6f2;
+  --brand-tint: #f0eefd;
+  --brand-tint-border: #ddd7f9;
+  --brand-tint-hover: #e5e1fb;
+  --ink: #1B1851;
+  --yellow: #FFF031;
+  --yellow-hover: #f2e522;
+  --yellow-disabled: #fbf7c2;
+  --hero-from: #2D2599;
+  --hero-to: #8878FE;
 }
 
 *, *::before, *::after {
@@ -87,23 +93,24 @@ h1 span {
 
 .btn-primary {
   padding: 9px 16px;
-  background: var(--brand);
-  color: #fff;
+  background: var(--yellow);
+  color: var(--ink);
   border: none;
-  border-radius: 6px;
+  border-radius: 20px;
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
   transition: background 0.15s;
   white-space: nowrap;
 }
 
 .btn-primary:hover:not(:disabled) {
-  background: var(--brand-hover);
+  background: var(--yellow-hover);
 }
 
 .btn-primary:disabled {
-  background: var(--brand-disabled);
+  background: var(--yellow-disabled);
+  color: #999;
   cursor: not-allowed;
 }
 
@@ -279,7 +286,7 @@ h1 span {
   letter-spacing: 0.3px;
 }
 
-/* ---------- Doofinder brand mark ---------- */
+/* ---------- Doofinder brand mark + hero band ---------- */
 
 .doofinder-logo {
   font-weight: 800;
@@ -287,6 +294,31 @@ h1 span {
   letter-spacing: 0.5px;
   color: var(--brand);
   margin-bottom: 24px;
+}
+
+.hero {
+  background: linear-gradient(135deg, var(--hero-from), var(--hero-to));
+  border-radius: 14px;
+  padding: 28px 28px 32px;
+  margin-bottom: 28px;
+}
+
+.hero .doofinder-logo {
+  color: #fff;
+  margin-bottom: 18px;
+}
+
+.hero h1 {
+  color: #fff;
+}
+
+.hero h1 span {
+  color: var(--yellow);
+}
+
+.hero .subtitle {
+  color: rgba(255, 255, 255, 0.85);
+  margin-bottom: 0;
 }
 
 .platform-card .name {
@@ -593,22 +625,23 @@ h1 span {
 .btn-call {
   flex: 1;
   padding: 9px 16px;
-  background: var(--brand);
-  color: #fff;
+  background: var(--yellow);
+  color: var(--ink);
   border: none;
-  border-radius: 6px;
+  border-radius: 20px;
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
   transition: background 0.15s;
 }
 
 .btn-call:hover:not(:disabled) {
-  background: var(--brand-hover);
+  background: var(--yellow-hover);
 }
 
 .btn-call:disabled {
-  background: var(--brand-disabled);
+  background: var(--yellow-disabled);
+  color: #999;
   cursor: not-allowed;
 }
 
