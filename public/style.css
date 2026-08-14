@@ -299,17 +299,26 @@ h1 span {
 .hero {
   background: linear-gradient(135deg, var(--hero-from), var(--hero-to));
   border-radius: 14px;
-  padding: 28px 28px 32px;
+  padding: 24px 28px 28px;
   margin-bottom: 28px;
+}
+
+.hero-title-row {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-bottom: 8px;
 }
 
 .hero .doofinder-logo {
   color: #fff;
-  margin-bottom: 18px;
+  margin-bottom: 0;
 }
 
 .hero h1 {
   color: #fff;
+  margin-bottom: 0;
 }
 
 .hero h1 span {
@@ -319,6 +328,15 @@ h1 span {
 .hero .subtitle {
   color: rgba(255, 255, 255, 0.85);
   margin-bottom: 0;
+}
+
+.hero .back-link {
+  color: rgba(255, 255, 255, 0.85);
+  margin-bottom: 12px;
+}
+
+.hero .back-link:hover {
+  color: #fff;
 }
 
 .platform-card .name {
