@@ -266,10 +266,9 @@ h1 span {
   transform: translateY(-2px);
 }
 
-.platform-card .icon {
+.icon {
   width: 44px;
   height: 44px;
-  margin: 0 auto 12px;
   border-radius: 10px;
   display: flex;
   align-items: center;
@@ -278,13 +277,17 @@ h1 span {
   font-weight: 700;
 }
 
-.platform-card .icon img {
+.platform-card .icon {
+  margin: 0 auto 12px;
+}
+
+.icon img {
   width: 24px;
   height: 24px;
   display: block;
 }
 
-.platform-card .icon.letter {
+.icon.letter {
   color: #fff;
   font-size: 14px;
   font-weight: 800;
@@ -314,10 +317,15 @@ h1 span {
 
 .hero-title-row {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   flex-wrap: wrap;
   gap: 14px;
   margin-bottom: 8px;
+}
+
+.hero-title-row .icon {
+  margin: 0;
+  flex-shrink: 0;
 }
 
 .hero .doofinder-logo {
@@ -326,7 +334,7 @@ h1 span {
 }
 
 .hero h1 {
-  color: #fff;
+  color: var(--yellow);
   margin-bottom: 0;
 }
 
@@ -388,7 +396,7 @@ h1 span {
   cursor: pointer;
   font-size: 14px;
   font-weight: 700;
-  color: #fff;
+  color: var(--yellow);
   text-align: left;
   margin-top: 16px;
 }
