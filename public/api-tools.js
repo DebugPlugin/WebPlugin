@@ -44,6 +44,20 @@ window.ApiTools = (function () {
     return { ...data, elapsed: Math.round(performance.now() - t0) };
   }
 
+  // Shopware 5's legacy /api/* is protected with HTTP Digest Auth — the server does the
+  // two-round-trip handshake (401 challenge, then a computed Authorization header).
+  async function callDigestProxy(url, { method = "GET", user, pass } = {}) {
+    const t0 = performance.now();
+    const res = await fetch("/api/proxy-digest", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ url, method, user, pass }),
+    });
+    const data = await res.json();
+    if (data.error) throw new Error(data.error);
+    return { ...data, elapsed: Math.round(performance.now() - t0) };
+  }
+
   function paramFieldHTML(ep, p) {
     if (p.type === "select") {
       const options = (p.options || [])
@@ -72,6 +86,7 @@ window.ApiTools = (function () {
       </button>
       <div id="body-${ep.key}" class="accordion-body">
         <div class="endpoint-path">${ep.method || "GET"} ${ep.pathLabel}</div>
+        ${ep.hint ? `<p class="hint">${ep.hint}</p>` : ""}
         ${paramsHtml ? `<div class="params-row">${paramsHtml}</div>` : ""}
         <div class="action-row">
           <button id="btn-curl-${ep.key}" class="btn-curl" type="button">Copy cURL</button>
@@ -119,7 +134,7 @@ window.ApiTools = (function () {
           alert("Enter the store URL first");
           return;
         }
-        const { url, headers, method, body } = ep.build(baseUrl, paramValue);
+        const { url, headers, method, body, digest } = ep.build(baseUrl, paramValue);
         btnCall.textContent = "Calling...";
         btnCall.disabled = true;
         badge.classList.add("hidden");
@@ -127,7 +142,9 @@ window.ApiTools = (function () {
         box.classList.add("hidden");
         btnCopy.classList.add("hidden");
         try {
-          const res = await callProxy(url, { method, headers, body });
+          const res = digest
+            ? await callDigestProxy(url, { method, user: digest.user, pass: digest.pass })
+            : await callProxy(url, { method, headers, body });
           let pretty, raw;
           try {
             const parsed = JSON.parse(res.text);
@@ -149,7 +166,7 @@ window.ApiTools = (function () {
             title: ep.title,
             method: method || "GET",
             url,
-            headers: redactHeaders(headers),
+            headers: digest ? { Authorization: "[redacted — Digest]" } : redactHeaders(headers),
             status: res.status,
             json: pretty,
           };
@@ -179,14 +196,20 @@ window.ApiTools = (function () {
           alert("Enter the store URL first");
           return;
         }
-        const { url, headers, method, body } = ep.build(baseUrl, paramValue);
-        const headerLines = Object.entries(headers || {})
-          .map(([k, v]) => `  --header '${k}: ${v}'`)
-          .join(" \\\n");
-        let cmd = `curl --location --globoff '${url}'`;
-        if (method && method !== "GET") cmd += ` \\\n  --request ${method}`;
-        if (headerLines) cmd += ` \\\n${headerLines}`;
-        if (body) cmd += ` \\\n  --data '${body}'`;
+        const { url, headers, method, body, digest } = ep.build(baseUrl, paramValue);
+        let cmd;
+        if (digest) {
+          cmd = `curl --location --globoff --digest -u '${digest.user}:${digest.pass}' '${url}'`;
+          if (method && method !== "GET") cmd += ` \\\n  --request ${method}`;
+        } else {
+          const headerLines = Object.entries(headers || {})
+            .map(([k, v]) => `  --header '${k}: ${v}'`)
+            .join(" \\\n");
+          cmd = `curl --location --globoff '${url}'`;
+          if (method && method !== "GET") cmd += ` \\\n  --request ${method}`;
+          if (headerLines) cmd += ` \\\n${headerLines}`;
+          if (body) cmd += ` \\\n  --data '${body}'`;
+        }
         navigator.clipboard.writeText(cmd).then(() => {
           const orig = btnCurl.textContent;
           btnCurl.textContent = "✓ Copied!";

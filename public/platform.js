@@ -4,6 +4,7 @@
   const versionSelect = document.getElementById('version-select');
 
   async function loadReleases() {
+    if (!versionSelect) return; // platforms with no browsable plugin source skip this entirely
     const res = await fetch(`/api/${PLATFORM}/releases`);
     const releases = await res.json();
     versionSelect.innerHTML = '';
@@ -76,7 +77,7 @@
       const originalLabel = shareMcpButton.textContent;
       shareMcpButton.disabled = true;
       try {
-        const tag = versionSelect.value;
+        const tag = versionSelect ? versionSelect.value : '';
         if (tag) {
           shareMcpButton.textContent = '⬇️ Downloading...';
           const dlRes = await fetch(`/api/${PLATFORM}/download`, {
@@ -90,7 +91,7 @@
 
         shareMcpButton.textContent = 'Sharing...';
         const includeCodeCheckbox = document.getElementById('chat-include-code');
-        const payload = { selectedVersion: tag, includeCode: includeCodeCheckbox ? includeCodeCheckbox.checked : true };
+        const payload = { selectedVersion: tag, includeCode: includeCodeCheckbox ? includeCodeCheckbox.checked : false };
 
         const wantsApiCall = (includeApiCallCheckbox && includeApiCallCheckbox.checked) || (includeApiJsonCheckbox && includeApiJsonCheckbox.checked);
         if (wantsApiCall && window.ApiTools) {
@@ -183,6 +184,9 @@
     return body;
   }
 
+  // Platforms with no browsable plugin source (e.g. Shopware, Shopify) skip the whole Chat
+  // section — there's nothing for it to inspect.
+  if (chatForm) {
   chatForm.addEventListener('submit', async (e) => {
     e.preventDefault();
     const message = chatInput.value.trim();
@@ -208,7 +212,7 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           messages: chatHistory,
-          version: versionSelect.value,
+          version: versionSelect ? versionSelect.value : undefined,
           model: chatModelSelect ? chatModelSelect.value : undefined
         })
       });
@@ -230,4 +234,5 @@
       chatInput.focus();
     }
   });
+  }
 })();

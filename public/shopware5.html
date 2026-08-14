@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Shopware 5 — Doofinder Plugin Explorer</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <div class="page page-wide">
+    <a class="back-link" href="/">← All platforms</a>
+    <h1>Shopware 5</h1>
+    <p class="subtitle">Doofinder plugin explorer</p>
+    <p class="hint">Plugin source code isn't available to browse for this platform (no known repo) — this page only offers store &amp; API tooling.</p>
+
+    <div class="page-columns">
+      <div class="page-col">
+        <div class="card">
+          <h2>Share with Claude (MCP)</h2>
+          <p class="hint">Shares the last API call and screenshots with Claude Desktop/claude.ai.</p>
+          <label class="checkbox-row">
+            <input type="checkbox" id="chat-include-api-call" checked>
+            Include last API call (method, URL, headers — tokens redacted)
+          </label>
+          <label class="checkbox-row">
+            <input type="checkbox" id="chat-include-api-json" checked>
+            Include last API response (JSON)
+          </label>
+          <label class="checkbox-row">
+            <input type="checkbox" id="chat-include-screenshots" data-storage-key="sw5-screenshots" checked>
+            Include screenshots (from the Screenshots section)
+          </label>
+          <button type="button" id="chat-share-mcp" class="btn-secondary">📤 Share with MCP</button>
+          <div class="response-box" style="margin-top: 14px;"><pre id="shared-mcp-status">Loading...</pre></div>
+          <button type="button" id="shared-mcp-reset" class="btn-secondary">Reset shared data</button>
+        </div>
+
+        <div class="card">
+          <h2>Reset browser data</h2>
+          <p class="hint">Clears data saved locally in this browser (separate from "Shared with MCP" above).</p>
+          <label class="checkbox-row"><input type="checkbox" id="reset-notes" checked> Notes</label>
+          <label class="checkbox-row"><input type="checkbox" id="reset-screenshots" checked> Screenshots</label>
+          <label class="checkbox-row"><input type="checkbox" id="reset-api" checked> API call history</label>
+          <button type="button" id="btn-reset-local" class="btn-secondary">Reset selected</button>
+        </div>
+      </div>
+
+      <div class="page-col">
+        <button class="section-toggle" id="sw5-section-a-toggle" type="button" data-target="sw5-section-a-body">
+          <span>Store &amp; API tools</span>
+          <span class="section-chevron">▼</span>
+        </button>
+        <div class="section-body" id="sw5-section-a-body">
+          <div class="card">
+            <h2>Store &amp; Auth</h2>
+            <p class="hint">Enter the target store and its credentials. Nothing is saved — you'll re-enter it after a page reload.</p>
+            <p class="hint">The legacy REST API (/api/*) uses HTTP Digest Auth — the server does the two-step challenge/response handshake for you.</p>
+            <div class="field-row">
+              <label for="sw5-store-url">Store URL</label>
+              <input id="sw5-store-url" type="text" placeholder="mystore.com">
+            </div>
+            <div class="field-row">
+              <label for="sw5-user">Username</label>
+              <input id="sw5-user" type="text" placeholder="doofinder" value="doofinder">
+            </div>
+            <div class="field-row">
+              <label for="sw5-apikey">API Key</label>
+              <input id="sw5-apikey" type="text" placeholder="paste manually">
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>API Calls</h2>
+            <p class="hint">Expand a section and click "Call endpoint" — requests run through the server proxy to avoid CORS.</p>
+            <div id="sw5-api-endpoints"></div>
+          </div>
+        </div>
+
+        <button class="section-toggle" id="sw5-section-notes-toggle" type="button" data-target="sw5-section-notes-body">
+          <span>Notes</span>
+          <span class="section-chevron">▼</span>
+        </button>
+        <div class="section-body" id="sw5-section-notes-body">
+          <div class="card">
+            <h2>Notes</h2>
+            <p class="hint">Free text — saved automatically in this browser.</p>
+            <p class="privacy-warning">⚠️ Don't include order/customer data — catalog and config only.</p>
+            <textarea id="sw5-notes" class="notes-textarea" data-storage-key="sw5-notes" placeholder="Write anything here..."></textarea>
+          </div>
+        </div>
+
+        <button class="section-toggle" id="sw5-section-screenshots-toggle" type="button" data-target="sw5-section-screenshots-body">
+          <span>Screenshots</span>
+          <span class="section-chevron">▼</span>
+        </button>
+        <div class="section-body" id="sw5-section-screenshots-body">
+          <div class="card">
+            <h2>Screenshots</h2>
+            <p class="hint">Up to 4 images, saved in this browser.</p>
+            <p class="privacy-warning">⚠️ Don't include order/customer data — catalog and config only.</p>
+            <div id="sw5-screenshots" class="screenshot-grid"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>window.PLATFORM = 'shopware5';</script>
+  <script src="/platform.js"></script>
+  <script src="/api-tools.js"></script>
+  <script src="/sw5-api.js"></script>
+  <script src="/notes.js"></script>
+  <script src="/screenshots.js"></script>
+  <script>Screenshots.mount(document.getElementById('sw5-screenshots'), 'sw5-screenshots');</script>
+</body>
+</html>

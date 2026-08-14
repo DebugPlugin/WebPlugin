@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Shoper — Doofinder Plugin Explorer</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <div class="page page-wide">
+    <a class="back-link" href="/">← All platforms</a>
+    <h1>Shoper</h1>
+    <p class="subtitle">Doofinder plugin explorer</p>
+    <p class="hint">Plugin source code isn't available to browse for this platform (private repo) — this page only offers store &amp; API tooling.</p>
+
+    <div class="page-columns">
+      <div class="page-col">
+        <div class="card">
+          <h2>Share with Claude (MCP)</h2>
+          <p class="hint">Shares the last API call and screenshots with Claude Desktop/claude.ai.</p>
+          <label class="checkbox-row">
+            <input type="checkbox" id="chat-include-api-call" checked>
+            Include last API call (method, URL, headers — tokens redacted)
+          </label>
+          <label class="checkbox-row">
+            <input type="checkbox" id="chat-include-api-json" checked>
+            Include last API response (JSON)
+          </label>
+          <label class="checkbox-row">
+            <input type="checkbox" id="chat-include-screenshots" data-storage-key="shoper-screenshots" checked>
+            Include screenshots (from the Screenshots section)
+          </label>
+          <button type="button" id="chat-share-mcp" class="btn-secondary">📤 Share with MCP</button>
+          <div class="response-box" style="margin-top: 14px;"><pre id="shared-mcp-status">Loading...</pre></div>
+          <button type="button" id="shared-mcp-reset" class="btn-secondary">Reset shared data</button>
+        </div>
+
+        <div class="card">
+          <h2>Reset browser data</h2>
+          <p class="hint">Clears data saved locally in this browser (separate from "Shared with MCP" above).</p>
+          <label class="checkbox-row"><input type="checkbox" id="reset-notes" checked> Notes</label>
+          <label class="checkbox-row"><input type="checkbox" id="reset-screenshots" checked> Screenshots</label>
+          <label class="checkbox-row"><input type="checkbox" id="reset-api" checked> API call history</label>
+          <button type="button" id="btn-reset-local" class="btn-secondary">Reset selected</button>
+        </div>
+      </div>
+
+      <div class="page-col">
+        <button class="section-toggle" id="shoper-section-a-toggle" type="button" data-target="shoper-section-a-body">
+          <span>Store &amp; API tools</span>
+          <span class="section-chevron">▼</span>
+        </button>
+        <div class="section-body" id="shoper-section-a-body">
+          <div class="card">
+            <h2>Store &amp; Auth</h2>
+            <p class="hint">Enter the target store and its credentials. Nothing is saved — you'll re-enter it after a page reload.</p>
+            <div class="field-row">
+              <label for="shoper-store-url">Store URL</label>
+              <input id="shoper-store-url" type="text" placeholder="mystore.pl">
+            </div>
+            <div class="field-row">
+              <label for="shoper-token">Bearer Token</label>
+              <input id="shoper-token" type="text" placeholder="paste manually">
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>API Calls</h2>
+            <p class="hint">Expand a section and click "Call endpoint" — requests run through the server proxy to avoid CORS.</p>
+            <div id="shoper-api-endpoints"></div>
+          </div>
+        </div>
+
+        <button class="section-toggle" id="shoper-section-notes-toggle" type="button" data-target="shoper-section-notes-body">
+          <span>Notes</span>
+          <span class="section-chevron">▼</span>
+        </button>
+        <div class="section-body" id="shoper-section-notes-body">
+          <div class="card">
+            <h2>Notes</h2>
+            <p class="hint">Free text — saved automatically in this browser.</p>
+            <p class="privacy-warning">⚠️ Don't include order/customer data — catalog and config only.</p>
+            <textarea id="shoper-notes" class="notes-textarea" data-storage-key="shoper-notes" placeholder="Write anything here..."></textarea>
+          </div>
+        </div>
+
+        <button class="section-toggle" id="shoper-section-screenshots-toggle" type="button" data-target="shoper-section-screenshots-body">
+          <span>Screenshots</span>
+          <span class="section-chevron">▼</span>
+        </button>
+        <div class="section-body" id="shoper-section-screenshots-body">
+          <div class="card">
+            <h2>Screenshots</h2>
+            <p class="hint">Up to 4 images, saved in this browser.</p>
+            <p class="privacy-warning">⚠️ Don't include order/customer data — catalog and config only.</p>
+            <div id="shoper-screenshots" class="screenshot-grid"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>window.PLATFORM = 'shoper';</script>
+  <script src="/platform.js"></script>
+  <script src="/api-tools.js"></script>
+  <script src="/shoper-api.js"></script>
+  <script src="/notes.js"></script>
+  <script src="/screenshots.js"></script>
+  <script>Screenshots.mount(document.getElementById('shoper-screenshots'), 'shoper-screenshots');</script>
+</body>
+</html>
