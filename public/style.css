@@ -71,7 +71,7 @@ h1 span {
   margin-bottom: 4px;
 }
 
-.card .hint {
+.hint {
   color: #888;
   font-size: 13px;
   margin-bottom: 16px;
@@ -715,6 +715,7 @@ h1 span {
 
 .response-box {
   margin-top: 10px;
+  margin-bottom: 12px;
   max-height: 320px;
   overflow-y: auto;
   border-radius: 6px;
