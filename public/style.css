@@ -334,7 +334,7 @@ h1 span {
 }
 
 .hero h1 {
-  color: var(--yellow);
+  color: #fff;
   margin-bottom: 0;
 }
 
@@ -347,13 +347,24 @@ h1 span {
   margin-bottom: 0;
 }
 
+.hero .subtitle.brand-subtitle {
+  font-weight: 800;
+  letter-spacing: 0.3px;
+  color: #fff;
+}
+
+.hero .subtitle.brand-subtitle .oo,
+.hero .subtitle.brand-subtitle .pe {
+  color: var(--yellow);
+}
+
 .hero .back-link {
-  color: rgba(255, 255, 255, 0.85);
+  color: var(--yellow);
   margin-bottom: 12px;
 }
 
 .hero .back-link:hover {
-  color: #fff;
+  color: var(--yellow-hover);
 }
 
 .platform-card .name {
@@ -396,7 +407,7 @@ h1 span {
   cursor: pointer;
   font-size: 14px;
   font-weight: 700;
-  color: var(--yellow);
+  color: #fff;
   text-align: left;
   margin-top: 16px;
 }

@@ -3,7 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>PrestaShop — Doofinder Plugin Explorer</title>
+  <title>PrestaShop — DPE</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="/style.css">
 </head>
 <body>
@@ -11,10 +12,10 @@
     <div class="hero">
       <a class="back-link" href="/">← All platforms</a>
       <div class="hero-title-row">
-        <div class="icon" style="background:#DF0067"><img src="/icons/prestashop.svg" alt=""></div>
+        <div class="icon" style="background:#DF0067"><img src="https://images.seeklogo.com/logo-png/48/1/prestashop-logo-png_seeklogo-482184.png" alt=""></div>
         <h1>PrestaShop</h1>
       </div>
-      <p class="subtitle">Doofinder plugin explorer</p>
+      <p class="subtitle brand-subtitle">D<span class="oo">OO</span>FINDER <span class="pe">Plugin Explorer</span></p>
     </div>
 
     <div class="page-columns">
@@ -27,7 +28,7 @@
               <option value="">Loading releases...</option>
             </select>
           </div>
-          <label class="checkbox-row">
+          <label class="checkbox-row" style="margin-top: 14px;">
             <input type="checkbox" id="chat-include-code" checked autocomplete="off">
             Include plugin code (for Claude chat via MCP)
           </label>
@@ -63,7 +64,7 @@
           <div class="card">
             <h2>Notes</h2>
             <p class="hint">Free text — saved automatically in this browser.</p>
-            <p class="privacy-warning">⚠️ Don't include order/customer data — catalog and config only.</p>
+            <p class="privacy-warning">⚠️ Do not include confidential data (tokens, order/customer data, etc.).</p>
             <textarea id="ps-notes" class="notes-textarea" data-storage-key="ps-notes" placeholder="Write anything here..."></textarea>
           </div>
         </div>
@@ -76,11 +77,12 @@
           <div class="card">
             <h2>Screenshots</h2>
             <p class="hint">Up to 4 images, saved in this browser.</p>
-            <p class="privacy-warning">⚠️ Don't include order/customer data — catalog and config only.</p>
+            <p class="privacy-warning">⚠️ Do not include confidential data (tokens, order/customer data, etc.).</p>
             <div id="ps-screenshots" class="screenshot-grid"></div>
           </div>
         </div>
 
+<!--
         <button class="section-toggle" id="ps-section-chat-toggle" type="button" data-target="ps-section-chat-body">
           <span>Chat</span>
           <span class="section-chevron">▼</span>
@@ -103,6 +105,7 @@
             </form>
           </div>
         </div>
+        -->
       </div>
     </div>
   </div>
