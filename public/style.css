@@ -11,6 +11,16 @@
   --yellow-disabled: #fbf7c2;
   --hero-from: #2D2599;
   --hero-to: #8878FE;
+
+  /* Dark theme surfaces, matching the /login page */
+  --surface: rgba(255, 255, 255, 0.06);
+  --surface-border: rgba(255, 255, 255, 0.14);
+  --surface-hover: rgba(255, 255, 255, 0.1);
+  --input-bg: rgba(0, 0, 0, 0.22);
+  --input-border: rgba(255, 255, 255, 0.16);
+  --text: #f2f0ff;
+  --text-muted: #b8b3e6;
+  --text-faint: #8880c0;
 }
 
 *, *::before, *::after {
@@ -21,8 +31,8 @@
 
 body {
   font-family: system-ui, -apple-system, sans-serif;
-  background: #f7f6fd;
-  color: #222;
+  background: var(--ink);
+  color: var(--text);
   font-size: 14px;
   line-height: 1.5;
 }
@@ -40,7 +50,7 @@ input[type="checkbox"] {
 h1 {
   font-size: 26px;
   font-weight: 700;
-  color: #222;
+  color: var(--text);
 }
 
 h1 span {
@@ -48,14 +58,14 @@ h1 span {
 }
 
 .subtitle {
-  color: #666;
+  color: var(--text-muted);
   margin-top: 4px;
   margin-bottom: 28px;
 }
 
 .card {
-  background: #fff;
-  border: 1px solid #e5e5e5;
+  background: var(--surface);
+  border: 1px solid var(--surface-border);
   border-top: 3px solid var(--brand);
   border-radius: 10px;
   padding: 20px;
@@ -77,7 +87,7 @@ h1 span {
 }
 
 .hint {
-  color: #888;
+  color: var(--text-muted);
   font-size: 13px;
   margin-bottom: 16px;
 }
@@ -95,10 +105,10 @@ h1 span {
   font-family: monospace;
   font-size: 13px;
   padding: 8px 10px;
-  border: 1px solid #ddd;
+  border: 1px solid var(--input-border);
   border-radius: 6px;
-  background: #fafafa;
-  color: #333;
+  background: var(--input-bg);
+  color: var(--text);
 }
 
 .btn-primary {
@@ -126,8 +136,8 @@ h1 span {
 
 .btn-secondary {
   padding: 9px 16px;
-  background: #fff;
-  color: var(--brand);
+  background: transparent;
+  color: var(--text);
   border: 1px solid var(--brand);
   border-radius: 6px;
   font-size: 14px;
@@ -138,7 +148,7 @@ h1 span {
 }
 
 .btn-secondary:hover:not(:disabled) {
-  background: var(--brand-tint);
+  background: rgba(91, 79, 224, 0.2);
 }
 
 .status-badge {
@@ -151,18 +161,18 @@ h1 span {
 }
 
 .status-badge.ok {
-  background: #e6f9ee;
-  color: #1a7f45;
+  background: rgba(46, 160, 67, 0.18);
+  color: #7ee2a8;
 }
 
 .status-badge.err {
-  background: #ffeef0;
-  color: #cf222e;
+  background: rgba(220, 38, 38, 0.18);
+  color: #ffb4b4;
 }
 
 .status-badge.pending {
-  background: #fff8e1;
-  color: #856404;
+  background: rgba(240, 196, 64, 0.18);
+  color: #ffe58a;
 }
 
 .hidden {
@@ -170,12 +180,12 @@ h1 span {
 }
 
 #chat-log {
-  border: 1px solid #e5e5e5;
+  border: 1px solid var(--surface-border);
   border-radius: 8px;
   padding: 14px;
   height: 340px;
   overflow-y: auto;
-  background: #fafafa;
+  background: var(--input-bg);
   margin-bottom: 10px;
 }
 
@@ -197,7 +207,7 @@ h1 span {
 }
 
 .chat-message.user .who {
-  color: #444;
+  color: var(--text-muted);
 }
 
 .chat-message.assistant .who {
@@ -205,7 +215,7 @@ h1 span {
 }
 
 .chat-message .thinking {
-  color: #888;
+  color: var(--text-muted);
   animation: thinking-pulse 1.2s ease-in-out infinite;
 }
 
@@ -223,10 +233,10 @@ h1 span {
   flex: 1;
   font-size: 14px;
   padding: 9px 12px;
-  border: 1px solid #ddd;
+  border: 1px solid var(--input-border);
   border-radius: 6px;
-  background: #fafafa;
-  color: #222;
+  background: var(--input-bg);
+  color: var(--text);
 }
 
 .chat-input:focus {
@@ -256,13 +266,13 @@ h1 span {
 
 .platform-card {
   display: block;
-  background: #fff;
-  border: 1px solid #e5e5e5;
+  background: var(--surface);
+  border: 1px solid var(--surface-border);
   border-radius: 10px;
   padding: 24px 16px;
   text-align: center;
   text-decoration: none;
-  color: #222;
+  color: var(--text);
   transition: border-color 0.15s, transform 0.1s;
 }
 
@@ -452,10 +462,10 @@ h1 span {
   font-family: monospace;
   font-size: 13px;
   padding: 10px;
-  border: 1px solid #ddd;
+  border: 1px solid var(--input-border);
   border-radius: 6px;
-  background: #fafafa;
-  color: #222;
+  background: var(--input-bg);
+  color: var(--text);
   resize: vertical;
 }
 
@@ -487,12 +497,12 @@ h1 span {
   justify-content: center;
   width: 100%;
   height: 100%;
-  border: 1.5px dashed #ccc;
+  border: 1.5px dashed var(--input-border);
   border-radius: 8px;
   cursor: pointer;
   overflow: hidden;
-  background: #fafafa;
-  color: #999;
+  background: var(--input-bg);
+  color: var(--text-faint);
   font-size: 12px;
   transition: border-color 0.15s;
 }
@@ -504,12 +514,12 @@ h1 span {
 .screenshot-preview.drag-over {
   border-color: var(--brand);
   border-style: solid;
-  background: var(--brand-tint);
+  background: rgba(91, 79, 224, 0.25);
 }
 
 .screenshot-preview:not(.empty) {
   border-style: solid;
-  border-color: #e0e0e0;
+  border-color: var(--surface-border);
 }
 
 .screenshot-preview img {
@@ -538,7 +548,7 @@ h1 span {
   align-items: center;
   gap: 6px;
   font-size: 12px;
-  color: #666;
+  color: var(--text-muted);
   margin-bottom: 10px;
   cursor: pointer;
 }
@@ -549,8 +559,8 @@ h1 span {
 
 .privacy-warning {
   font-size: 12px;
-  color: #9a6700;
-  background: #fff8e1;
+  color: #ffd76a;
+  background: rgba(240, 196, 64, 0.12);
   border-left: 3px solid #f0c040;
   padding: 6px 10px;
   margin-bottom: 10px;
@@ -566,7 +576,7 @@ h1 span {
   display: block;
   font-size: 12px;
   font-weight: 600;
-  color: #555;
+  color: var(--text-muted);
   margin-bottom: 4px;
 }
 
@@ -575,10 +585,10 @@ h1 span {
   font-family: monospace;
   font-size: 13px;
   padding: 8px 10px;
-  border: 1px solid #ddd;
+  border: 1px solid var(--input-border);
   border-radius: 6px;
-  background: #fafafa;
-  color: #333;
+  background: var(--input-bg);
+  color: var(--text);
 }
 
 .field-row input:focus {
@@ -589,7 +599,7 @@ h1 span {
 /* API call accordions */
 .divider {
   height: 1px;
-  background: #eee;
+  background: var(--surface-border);
   margin: 14px 0;
 }
 
@@ -622,7 +632,7 @@ h1 span {
 
 .accordion-chevron {
   font-size: 11px;
-  color: #aaa;
+  color: var(--text-muted);
   transition: transform 0.2s;
 }
 
@@ -642,9 +652,9 @@ h1 span {
 .endpoint-path {
   font-family: monospace;
   font-size: 13px;
-  color: #333;
+  color: var(--text);
   margin-bottom: 12px;
-  background: #f5f5f5;
+  background: rgba(0, 0, 0, 0.25);
   padding: 6px 10px;
   border-radius: 4px;
   word-break: break-all;
@@ -666,7 +676,7 @@ h1 span {
 .param-label {
   font-size: 11px;
   font-weight: 600;
-  color: #888;
+  color: var(--text-muted);
   text-transform: uppercase;
   letter-spacing: 0.04em;
 }
@@ -675,10 +685,10 @@ h1 span {
   font-family: monospace;
   font-size: 13px;
   padding: 4px 6px;
-  border: 1px solid #ddd;
+  border: 1px solid var(--input-border);
   border-radius: 4px;
-  background: #fafafa;
-  color: #333;
+  background: var(--input-bg);
+  color: var(--text);
   width: 100px;
 }
 
@@ -712,7 +722,7 @@ h1 span {
 
 .btn-curl {
   padding: 9px 12px;
-  background: #fff;
+  background: transparent;
   color: var(--brand);
   border: 1.5px solid var(--brand);
   border-radius: 6px;
@@ -738,7 +748,7 @@ h1 span {
 
 .time-taken {
   font-size: 12px;
-  color: #888;
+  color: var(--text-muted);
 }
 
 .response-box {
@@ -747,8 +757,8 @@ h1 span {
   max-height: 320px;
   overflow-y: auto;
   border-radius: 6px;
-  border: 1px solid #e0e0e0;
-  background: #fafafa;
+  border: 1px solid var(--surface-border);
+  background: var(--input-bg);
 }
 
 .response-box pre {
@@ -765,7 +775,7 @@ h1 span {
   width: 100%;
   margin-top: 8px;
   padding: 7px;
-  background: #fff;
+  background: transparent;
   color: var(--brand);
   border: 1.5px solid var(--brand);
   border-radius: 6px;
