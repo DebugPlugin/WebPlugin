@@ -29,7 +29,7 @@ window.Screenshots = (function () {
   }
 
   function mount(container, storageKey, slotCount) {
-    slotCount = slotCount || 4;
+    slotCount = slotCount || 8;
     let items = [];
     try {
       items = JSON.parse(localStorage.getItem(storageKey) || "[]");
@@ -43,6 +43,17 @@ window.Screenshots = (function () {
         localStorage.setItem(storageKey, JSON.stringify(items));
       } catch {
         // localStorage quota exceeded — the image just won't survive a reload.
+      }
+    }
+
+    async function handleFile(i, file) {
+      if (!file) return;
+      try {
+        items[i] = await resizeImage(file, 1024, 0.82);
+        persist();
+        render();
+      } catch {
+        alert("Could not load that image");
       }
     }
 
@@ -61,16 +72,21 @@ window.Screenshots = (function () {
         .join("");
 
       container.querySelectorAll(".screenshot-input").forEach((input, i) => {
-        input.addEventListener("change", async () => {
-          const file = input.files[0];
-          if (!file) return;
-          try {
-            items[i] = await resizeImage(file, 1024, 0.82);
-            persist();
-            render();
-          } catch {
-            alert("Could not load that image");
-          }
+        input.addEventListener("change", () => handleFile(i, input.files[0]));
+      });
+
+      container.querySelectorAll(".screenshot-preview").forEach((label, i) => {
+        label.addEventListener("dragover", (e) => {
+          e.preventDefault();
+          label.classList.add("drag-over");
+        });
+        label.addEventListener("dragleave", () => {
+          label.classList.remove("drag-over");
+        });
+        label.addEventListener("drop", (e) => {
+          e.preventDefault();
+          label.classList.remove("drag-over");
+          handleFile(i, e.dataTransfer.files && e.dataTransfer.files[0]);
         });
       });
 

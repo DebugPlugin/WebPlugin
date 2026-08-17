@@ -466,9 +466,9 @@ h1 span {
 
 /* Screenshots */
 .screenshot-grid {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(4, 110px);
   gap: 10px;
-  flex-wrap: wrap;
 }
 
 .screenshot-slot {
@@ -498,7 +498,13 @@ h1 span {
 }
 
 .screenshot-preview:hover {
-  border-color: var(--yellow);
+  border-color: var(--brand);
+}
+
+.screenshot-preview.drag-over {
+  border-color: var(--brand);
+  border-style: solid;
+  background: var(--brand-tint);
 }
 
 .screenshot-preview:not(.empty) {
@@ -595,9 +601,15 @@ h1 span {
   cursor: pointer;
   user-select: none;
   background: none;
-  border: none;
+  border: 1.5px solid transparent;
+  border-radius: 6px;
   width: 100%;
   text-align: left;
+  transition: border-color 0.15s;
+}
+
+.accordion-header:hover {
+  border-color: var(--brand);
 }
 
 .accordion-title {
