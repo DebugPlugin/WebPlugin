@@ -597,7 +597,7 @@ h1 span {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 10px 0;
+  padding: 10px 10px;
   cursor: pointer;
   user-select: none;
   background: none;
