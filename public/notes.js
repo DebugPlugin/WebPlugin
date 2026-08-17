@@ -22,5 +22,8 @@
         ta.value = "";
       });
     },
+    getText(storageKey) {
+      return localStorage.getItem(storageKey) || "";
+    },
   };
 })();

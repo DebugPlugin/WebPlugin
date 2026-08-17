@@ -104,6 +104,12 @@
           if (images.length) payload.screenshots = images;
         }
 
+        const includeNotesCheckbox = document.getElementById('chat-include-notes');
+        if (includeNotesCheckbox && includeNotesCheckbox.checked && window.Notes) {
+          const text = Notes.getText(includeNotesCheckbox.dataset.storageKey);
+          if (text) payload.notes = text;
+        }
+
         const res = await fetch(`/api/${PLATFORM}/context`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -138,7 +144,8 @@
             `Shared at: ${new Date(ctx.savedAt).toLocaleString()}`,
             `Selected version: ${ctx.includeCode ? (ctx.selectedVersion || '—') : 'not shared'}`,
             `API call: ${ctx.apiCall ? `${ctx.apiCall.method} ${ctx.apiCall.url} (HTTP ${ctx.apiCall.status})` : '—'}`,
-            `Screenshots: ${ctx.screenshotCount}`
+            `Screenshots: ${ctx.screenshotCount}`,
+            `Notes: ${ctx.notes ? 1 : 0}`
           ]
         : ['Nothing shared yet.'];
 
