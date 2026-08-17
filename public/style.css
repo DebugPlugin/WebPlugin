@@ -789,3 +789,34 @@ h1 span {
   background: var(--brand);
   color: #fff;
 }
+
+/* Home page: "Shared with MCP — All Platforms" overview */
+.mcp-overview-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.mcp-overview-table th,
+.mcp-overview-table td {
+  padding: 8px 10px;
+  text-align: left;
+  border-bottom: 1px solid var(--surface-border);
+  white-space: nowrap;
+}
+
+.mcp-overview-table th {
+  color: var(--text-muted);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.mcp-overview-table td {
+  color: var(--text);
+}
+
+.mcp-overview-table tr:last-child td {
+  border-bottom: none;
+}
