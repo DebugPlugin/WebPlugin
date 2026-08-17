@@ -2,6 +2,14 @@
   const container = document.getElementById('mcp-overview');
   if (!container) return;
 
+  const toggleBtn = document.getElementById('mcp-overview-toggle');
+  if (toggleBtn) {
+    toggleBtn.addEventListener('click', () => {
+      toggleBtn.classList.toggle('open');
+      document.getElementById(toggleBtn.dataset.target).classList.toggle('open');
+    });
+  }
+
   const PLATFORMS = [
     { key: 'prestashop', label: 'PrestaShop' },
     { key: 'magento', label: 'Magento' },
@@ -29,9 +37,22 @@
     }
   }
 
+  async function loadUsage() {
+    try {
+      const usage = await fetch('/api/redis-usage').then((r) => r.json());
+      if (!usage.available) return '';
+      const usedMb = (usage.usedBytes / (1024 * 1024)).toFixed(2);
+      const limitMb = (usage.limitBytes / (1024 * 1024)).toFixed(0);
+      const freeMb = ((usage.limitBytes - usage.usedBytes) / (1024 * 1024)).toFixed(2);
+      return `<p class="hint" style="margin-top: 12px; margin-bottom: 0;">Storage: ${usedMb} MB used of ${limitMb} MB (${freeMb} MB free)</p>`;
+    } catch {
+      return '';
+    }
+  }
+
   async function load() {
     container.innerHTML = '<p class="hint">Loading...</p>';
-    const results = await Promise.all(PLATFORMS.map(loadOne));
+    const [results, usageHtml] = await Promise.all([Promise.all(PLATFORMS.map(loadOne)), loadUsage()]);
 
     const rows = results
       .map(({ key, label, ctx }) => {
@@ -71,7 +92,8 @@
           </thead>
           <tbody>${rows}</tbody>
         </table>
-      </div>`;
+      </div>
+      ${usageHtml}`;
   }
 
   load();
