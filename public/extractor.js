@@ -20,6 +20,11 @@ window.Extractor = (function () {
           select or drop several .har files at once (e.g. from different pages of the same
           site) and they'll be merged into one result.
         </p>
+        <p class="privacy-warning">⚠️ A HAR captures real browser traffic — don't import or share one from a session with confidential data you don't want exposed. Redaction below is heuristic, not a guarantee.</p>
+        <label class="checkbox-row">
+          <input type="checkbox" id="ext-har-redact-checkbox" checked>
+          Redact sensitive data in file contents (email, tokens, cards…)
+        </label>
         <div class="extractor-dropzone" id="ext-har-dropzone">
           Drag one or more .har files here, or click to choose them
         </div>
@@ -37,6 +42,7 @@ window.Extractor = (function () {
           Doesn't execute code, so it can miss URLs that only exist at runtime (those show up
           separately, marked as not confirmed).
         </p>
+        <p class="privacy-warning">⚠️ Only inline HTML content is redacted below — fetched external JS/CSS files are shared and downloaded as-is.</p>
         <label class="checkbox-row">
           <input type="checkbox" id="ext-inline-only-checkbox" checked>
           Inline only (JS/CSS embedded in the HTML) — a HAR already covers the rest
@@ -109,6 +115,7 @@ window.Extractor = (function () {
     const harInput = container.querySelector('#ext-har-input');
     const harFileList = container.querySelector('#ext-har-file-list');
     const harBtn = container.querySelector('#ext-har-btn');
+    const harRedactCheckbox = container.querySelector('#ext-har-redact-checkbox');
 
     const urlInput = container.querySelector('#ext-url-input');
     const scanBtn = container.querySelector('#ext-scan-btn');
@@ -277,6 +284,7 @@ window.Extractor = (function () {
       try {
         const fd = new FormData();
         harFiles.forEach((file) => fd.append('har', file));
+        fd.append('redact', harRedactCheckbox.checked ? 'true' : 'false');
         const res = await fetch('/api/extractor/import-har', { method: 'POST', body: fd });
         const data = await res.json();
         if (!res.ok) throw new Error(data.error || 'Unknown error');
@@ -329,6 +337,7 @@ window.Extractor = (function () {
     resetters[container.id] = () => {
       harFiles = [];
       renderHarFileList();
+      harRedactCheckbox.checked = true;
       urlInput.value = '';
       inlineOnlyCheckbox.checked = true;
       redactCheckbox.checked = true;
