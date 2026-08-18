@@ -18,7 +18,7 @@
 
   loadReleases();
 
-  // ---------- Reset browser data (Notes / Screenshots / API call history) ----------
+  // ---------- Reset local data (Notes / Screenshots / API call history / JS/CSS Extractor) ----------
 
   const resetLocalBtn = document.getElementById('btn-reset-local');
   if (resetLocalBtn) {
