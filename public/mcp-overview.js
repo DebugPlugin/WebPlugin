@@ -2,14 +2,6 @@
   const container = document.getElementById('mcp-overview');
   if (!container) return;
 
-  const toggleBtn = document.getElementById('mcp-overview-toggle');
-  if (toggleBtn) {
-    toggleBtn.addEventListener('click', () => {
-      toggleBtn.classList.toggle('open');
-      document.getElementById(toggleBtn.dataset.target).classList.toggle('open');
-    });
-  }
-
   const PLATFORMS = [
     { key: 'prestashop', label: 'PrestaShop' },
     { key: 'magento', label: 'Magento' },
