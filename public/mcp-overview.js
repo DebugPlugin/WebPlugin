@@ -58,7 +58,7 @@
     const rows = results
       .map(({ key, label, ctx }) => {
         if (!ctx || !ctx.savedAt) {
-          return `<tr><td>${escapeHtml(label)}</td><td colspan="5" style="color: var(--text-faint);">Nothing shared yet.</td></tr>`;
+          return `<tr><td>${escapeHtml(label)}</td><td colspan="6" style="color: var(--text-faint);">Nothing shared yet.</td></tr>`;
         }
         const version = ctx.includeCode ? escapeHtml(ctx.selectedVersion || '—') : 'not shared';
         const apiCall = ctx.apiCall
@@ -66,6 +66,7 @@
           : '—';
         const screenshots = ctx.screenshotCount || 0;
         const notes = ctx.notes ? 'Yes' : 'No';
+        const extracted = ctx.extractedAssetsCount || 0;
         const savedAt = escapeHtml(new Date(ctx.savedAt).toLocaleString());
         return `<tr>
           <td>${escapeHtml(label)}</td>
@@ -73,6 +74,7 @@
           <td>${apiCall}</td>
           <td>${screenshots}</td>
           <td>${notes}</td>
+          <td>${extracted}</td>
           <td>${savedAt}</td>
         </tr>`;
       })
@@ -88,6 +90,7 @@
               <th>Last API call</th>
               <th>Screenshots</th>
               <th>Notes</th>
+              <th>JS/CSS</th>
               <th>Shared at</th>
             </tr>
           </thead>

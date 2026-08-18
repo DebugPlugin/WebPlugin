@@ -28,15 +28,15 @@
               <option value="">Loading releases...</option>
             </select>
           </div>
-          <label class="checkbox-row" style="margin-top: 14px;">
-            <input type="checkbox" id="chat-include-code" checked autocomplete="off">
-            Include plugin code (for Claude chat via MCP)
-          </label>
         </div>
 
         <div class="card">
           <h2>Share with Claude (MCP)</h2>
           <p class="hint">Downloads the selected version and shares it with Claude Desktop/claude.ai.</p>
+          <label class="checkbox-row">
+            <input type="checkbox" id="chat-include-code" checked autocomplete="off">
+            Include plugin code (for Claude chat via MCP)
+          </label>
           <label class="checkbox-row">
             <input type="checkbox" id="chat-include-api-call" checked>
             Include last API call (method, URL, headers — tokens redacted)
@@ -53,6 +53,10 @@
             <input type="checkbox" id="chat-include-notes" data-storage-key="mg-notes" checked>
             Include notes (from the Notes section)
           </label>
+          <label class="checkbox-row">
+            <input type="checkbox" id="chat-include-extractor" data-storage-key="mg-extractor" checked>
+            Include extracted JS/CSS (from the JS/CSS Extractor section)
+          </label>
           <button type="button" id="chat-share-mcp" class="btn-secondary">📤 Share with MCP</button>
           <div class="response-box" style="margin-top: 14px;"><pre id="shared-mcp-status">Loading...</pre></div>
           <button type="button" id="shared-mcp-reset" class="btn-secondary">Reset shared data</button>
@@ -66,6 +70,7 @@
           <label class="checkbox-row"><input type="checkbox" id="reset-notes" checked> Notes</label>
           <label class="checkbox-row"><input type="checkbox" id="reset-screenshots" checked> Screenshots</label>
           <label class="checkbox-row"><input type="checkbox" id="reset-api" checked> API call history</label>
+          <label class="checkbox-row"><input type="checkbox" id="reset-extractor" data-storage-key="mg-extractor" checked> JS/CSS Extractor</label>
           <button type="button" id="btn-reset-local" class="btn-secondary">Reset selected</button>
         </div>
 

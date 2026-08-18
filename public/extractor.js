@@ -1,4 +1,7 @@
 window.Extractor = (function () {
+  const getters = {};
+  const resetters = {};
+
   function fmtSize(bytes) {
     if (bytes == null) return '';
     if (bytes < 1024) return bytes + ' B';
@@ -24,7 +27,6 @@ window.Extractor = (function () {
         <ul class="extractor-har-file-list" id="ext-har-file-list"></ul>
         <div class="extractor-panel-actions">
           <button type="button" id="ext-har-btn" class="btn-secondary" disabled>Import</button>
-          <button type="button" id="ext-har-reset-btn" class="btn-secondary">Reset section</button>
         </div>
       </div>
 
@@ -54,7 +56,6 @@ window.Extractor = (function () {
         </div>
         <div class="extractor-panel-actions">
           <button type="button" id="ext-scan-btn" class="btn-primary">Scan</button>
-          <button type="button" id="ext-scan-reset-btn" class="btn-secondary">Reset section</button>
         </div>
       </div>
 
@@ -108,11 +109,9 @@ window.Extractor = (function () {
     const harInput = container.querySelector('#ext-har-input');
     const harFileList = container.querySelector('#ext-har-file-list');
     const harBtn = container.querySelector('#ext-har-btn');
-    const harResetBtn = container.querySelector('#ext-har-reset-btn');
 
     const urlInput = container.querySelector('#ext-url-input');
     const scanBtn = container.querySelector('#ext-scan-btn');
-    const scanResetBtn = container.querySelector('#ext-scan-reset-btn');
     const inlineOnlyCheckbox = container.querySelector('#ext-inline-only-checkbox');
     const redactCheckbox = container.querySelector('#ext-redact-checkbox');
 
@@ -134,7 +133,10 @@ window.Extractor = (function () {
     const cssCountPill = container.querySelector('#ext-css-count-pill');
     const cssEmpty = container.querySelector('#ext-css-empty');
 
-    let currentToken = null;
+    // The last scan/import result (token + file metadata, no bodies) — what
+    // "Include extracted JS/CSS" shares with MCP via the platform page's
+    // Share with Claude button.
+    let lastResult = null;
 
     function getKindFilter() {
       const checked = container.querySelector('input[name="ext-kind-filter"]:checked');
@@ -206,9 +208,9 @@ window.Extractor = (function () {
     }
 
     function download(kind) {
-      if (!currentToken) return;
+      if (!lastResult) return;
       const q = kind === 'all' ? '' : `?kind=${kind}`;
-      window.location.href = `/api/extractor/download/${currentToken}${q}`;
+      window.location.href = `/api/extractor/download/${lastResult.token}${q}`;
     }
     downloadJsBtn.addEventListener('click', () => download('js'));
     downloadCssBtn.addEventListener('click', () => download('css'));
@@ -264,24 +266,12 @@ window.Extractor = (function () {
       addHarFiles(e.dataTransfer.files);
     });
 
-    harResetBtn.addEventListener('click', () => {
-      harFiles = [];
-      renderHarFileList();
-    });
-
-    scanResetBtn.addEventListener('click', () => {
-      urlInput.value = '';
-      inlineOnlyCheckbox.checked = true;
-      redactCheckbox.checked = true;
-      container.querySelector('input[name="ext-kind-filter"][value="all"]').checked = true;
-    });
-
     harBtn.addEventListener('click', async () => {
       if (!harFiles.length) return;
 
       harBtn.disabled = true;
       results.hidden = true;
-      currentToken = null;
+      lastResult = null;
       setStatus(harFiles.length > 1 ? `Importing ${harFiles.length} HAR files…` : 'Importing HAR…');
 
       try {
@@ -291,7 +281,7 @@ window.Extractor = (function () {
         const data = await res.json();
         if (!res.ok) throw new Error(data.error || 'Unknown error');
 
-        currentToken = data.token;
+        lastResult = data;
         renderResults(data);
         setStatus(harFiles.length > 1 ? `${harFiles.length} HAR files imported and merged.` : 'HAR imported successfully.');
       } catch (err) {
@@ -307,7 +297,7 @@ window.Extractor = (function () {
 
       scanBtn.disabled = true;
       results.hidden = true;
-      currentToken = null;
+      lastResult = null;
       setStatus('Scanning… this can take a few seconds if there are many files.');
 
       try {
@@ -324,7 +314,7 @@ window.Extractor = (function () {
         const data = await res.json();
         if (!res.ok) throw new Error(data.error || 'Unknown error');
 
-        currentToken = data.token;
+        lastResult = data;
         renderResults(data);
         setStatus('Scan complete.');
       } catch (err) {
@@ -333,7 +323,29 @@ window.Extractor = (function () {
         scanBtn.disabled = false;
       }
     });
+
+    getters[container.id] = () => lastResult;
+
+    resetters[container.id] = () => {
+      harFiles = [];
+      renderHarFileList();
+      urlInput.value = '';
+      inlineOnlyCheckbox.checked = true;
+      redactCheckbox.checked = true;
+      container.querySelector('input[name="ext-kind-filter"][value="all"]').checked = true;
+      results.hidden = true;
+      lastResult = null;
+      setStatus('');
+    };
   }
 
-  return { mount };
+  function getLastResult(containerId) {
+    return getters[containerId] ? getters[containerId]() : null;
+  }
+
+  function resetAll(containerId) {
+    if (resetters[containerId]) resetters[containerId]();
+  }
+
+  return { mount, getLastResult, resetAll };
 })();

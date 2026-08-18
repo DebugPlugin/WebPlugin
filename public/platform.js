@@ -26,13 +26,18 @@
       const wantNotes = document.getElementById('reset-notes')?.checked;
       const wantScreenshots = document.getElementById('reset-screenshots')?.checked;
       const wantApi = document.getElementById('reset-api')?.checked;
+      const wantExtractor = document.getElementById('reset-extractor')?.checked;
       const screenshotsCheckbox = document.getElementById('chat-include-screenshots');
+      const extractorResetCheckbox = document.getElementById('reset-extractor');
 
       if (wantNotes && window.Notes) window.Notes.resetAll();
       if (wantScreenshots && window.Screenshots && screenshotsCheckbox) {
         window.Screenshots.resetAll(screenshotsCheckbox.dataset.storageKey);
       }
       if (wantApi && window.ApiTools) window.ApiTools.reset();
+      if (wantExtractor && window.Extractor && extractorResetCheckbox) {
+        window.Extractor.resetAll(extractorResetCheckbox.dataset.storageKey);
+      }
 
       const originalLabel = resetLocalBtn.textContent;
       resetLocalBtn.textContent = '✅ Reset!';
@@ -110,6 +115,12 @@
           if (text) payload.notes = text;
         }
 
+        const includeExtractorCheckbox = document.getElementById('chat-include-extractor');
+        if (includeExtractorCheckbox && includeExtractorCheckbox.checked && window.Extractor) {
+          const extracted = Extractor.getLastResult(includeExtractorCheckbox.dataset.storageKey);
+          if (extracted) payload.extractedAssets = extracted;
+        }
+
         const res = await fetch(`/api/${PLATFORM}/context`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -145,7 +156,8 @@
             `Selected version: ${ctx.includeCode ? (ctx.selectedVersion || '—') : 'not shared'}`,
             `API call: ${ctx.apiCall ? `${ctx.apiCall.method} ${ctx.apiCall.url} (HTTP ${ctx.apiCall.status})` : '—'}`,
             `Screenshots: ${ctx.screenshotCount}`,
-            `Notes: ${ctx.notes ? 1 : 0}`
+            `Notes: ${ctx.notes ? 1 : 0}`,
+            `Extracted JS/CSS: ${ctx.extractedAssetsCount || 0}`
           ]
         : ['Nothing shared yet.'];
 
