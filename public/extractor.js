@@ -81,9 +81,12 @@ window.Extractor = (function () {
 
         <section class="extractor-kind-section">
           <h3>JavaScript <span class="extractor-count-pill" id="ext-js-count-pill">0</span></h3>
-          <p class="hint" style="margin-bottom:6px;">Only files with sensitive data redacted are listed here.</p>
-          <ul class="extractor-file-list" id="ext-js-list-ok"></ul>
           <div class="hint" id="ext-js-empty" hidden></div>
+          <details id="ext-js-ok-wrap" hidden>
+            <summary id="ext-js-ok-summary"></summary>
+            <p class="hint" style="margin:6px 0;">Only files with sensitive data redacted are listed here.</p>
+            <ul class="extractor-file-list" id="ext-js-list-ok"></ul>
+          </details>
           <details id="ext-js-failed-wrap" hidden>
             <summary id="ext-js-failed-summary"></summary>
             <ul class="extractor-file-list" id="ext-js-list-failed"></ul>
@@ -92,9 +95,12 @@ window.Extractor = (function () {
 
         <section class="extractor-kind-section">
           <h3>CSS <span class="extractor-count-pill" id="ext-css-count-pill">0</span></h3>
-          <p class="hint" style="margin-bottom:6px;">Only files with sensitive data redacted are listed here.</p>
-          <ul class="extractor-file-list" id="ext-css-list-ok"></ul>
           <div class="hint" id="ext-css-empty" hidden></div>
+          <details id="ext-css-ok-wrap" hidden>
+            <summary id="ext-css-ok-summary"></summary>
+            <p class="hint" style="margin:6px 0;">Only files with sensitive data redacted are listed here.</p>
+            <ul class="extractor-file-list" id="ext-css-list-ok"></ul>
+          </details>
           <details id="ext-css-failed-wrap" hidden>
             <summary id="ext-css-failed-summary"></summary>
             <ul class="extractor-file-list" id="ext-css-list-failed"></ul>
@@ -128,6 +134,8 @@ window.Extractor = (function () {
     const downloadAllBtn = container.querySelector('#ext-download-all-btn');
 
     const jsListOk = container.querySelector('#ext-js-list-ok');
+    const jsOkWrap = container.querySelector('#ext-js-ok-wrap');
+    const jsOkSummary = container.querySelector('#ext-js-ok-summary');
     const jsListFailed = container.querySelector('#ext-js-list-failed');
     const jsFailedWrap = container.querySelector('#ext-js-failed-wrap');
     const jsFailedSummary = container.querySelector('#ext-js-failed-summary');
@@ -135,6 +143,8 @@ window.Extractor = (function () {
     const jsEmpty = container.querySelector('#ext-js-empty');
 
     const cssListOk = container.querySelector('#ext-css-list-ok');
+    const cssOkWrap = container.querySelector('#ext-css-ok-wrap');
+    const cssOkSummary = container.querySelector('#ext-css-ok-summary');
     const cssListFailed = container.querySelector('#ext-css-list-failed');
     const cssFailedWrap = container.querySelector('#ext-css-failed-wrap');
     const cssFailedSummary = container.querySelector('#ext-css-failed-summary');
@@ -175,7 +185,7 @@ window.Extractor = (function () {
       return li;
     }
 
-    function fillSection(files, listOk, listFailed, failedWrap, failedSummary, countPill, emptyNote, extLabel) {
+    function fillSection(files, listOk, okWrap, okSummary, listFailed, failedWrap, failedSummary, countPill, emptyNote, extLabel) {
       listOk.innerHTML = '';
       listFailed.innerHTML = '';
       const ok = files.filter((f) => f.ok);
@@ -185,8 +195,11 @@ window.Extractor = (function () {
       failed.forEach((f) => listFailed.appendChild(makeItem(f)));
       countPill.textContent = ok.length;
       if (redacted.length) {
+        okWrap.hidden = false;
+        okSummary.textContent = `${redacted.length} file(s) with sensitive data redacted`;
         emptyNote.hidden = true;
       } else {
+        okWrap.hidden = true;
         emptyNote.hidden = false;
         emptyNote.textContent = ok.length
           ? `${ok.length} ${extLabel} downloaded, none with sensitive data redacted.`
@@ -205,8 +218,8 @@ window.Extractor = (function () {
       const jsFiles = data.files.filter((f) => f.kind === 'js');
       const cssFiles = data.files.filter((f) => f.kind === 'css');
 
-      const { okCount: okJs } = fillSection(jsFiles, jsListOk, jsListFailed, jsFailedWrap, jsFailedSummary, jsCountPill, jsEmpty, '.js');
-      const { okCount: okCss } = fillSection(cssFiles, cssListOk, cssListFailed, cssFailedWrap, cssFailedSummary, cssCountPill, cssEmpty, '.css');
+      const { okCount: okJs } = fillSection(jsFiles, jsListOk, jsOkWrap, jsOkSummary, jsListFailed, jsFailedWrap, jsFailedSummary, jsCountPill, jsEmpty, '.js');
+      const { okCount: okCss } = fillSection(cssFiles, cssListOk, cssOkWrap, cssOkSummary, cssListFailed, cssFailedWrap, cssFailedSummary, cssCountPill, cssEmpty, '.css');
 
       downloadJsBtn.disabled = !okJs;
       downloadCssBtn.disabled = !okCss;
