@@ -931,16 +931,11 @@ h1 span {
 
 .extractor-toolbar {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   align-items: center;
   margin: 20px 0 20px;
   gap: 12px;
   flex-wrap: wrap;
-}
-
-.extractor-summary {
-  font-size: 13px;
-  color: var(--text-muted);
 }
 
 .extractor-download-group {

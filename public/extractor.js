@@ -44,7 +44,6 @@ window.Extractor = (function () {
 
       <div id="ext-results" hidden>
         <div class="extractor-toolbar">
-          <span class="extractor-summary" id="ext-summary-label"></span>
           <div class="extractor-download-group">
             <button class="btn-secondary" id="ext-download-js-btn">Download JS</button>
             <button class="btn-secondary" id="ext-download-css-btn">Download CSS</button>
@@ -86,7 +85,6 @@ window.Extractor = (function () {
 
     const statusEl = container.querySelector('#ext-status');
     const results = container.querySelector('#ext-results');
-    const summaryLabel = container.querySelector('#ext-summary-label');
 
     const harDropzone = container.querySelector('#ext-har-dropzone');
     const harInput = container.querySelector('#ext-har-input');
@@ -185,7 +183,6 @@ window.Extractor = (function () {
       downloadCssBtn.disabled = !okCss;
       downloadAllBtn.disabled = !okJs && !okCss;
 
-      summaryLabel.textContent = `${okJs} JS confirmed · ${okCss} CSS confirmed (of ${data.count} detected) on ${data.pageUrl}`;
       results.hidden = false;
     }
 
