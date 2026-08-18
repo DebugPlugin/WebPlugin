@@ -1,5 +1,5 @@
 window.Extractor = (function () {
-  const getters = {};
+  const runners = {};
   const resetters = {};
 
   function fmtSize(bytes) {
@@ -35,9 +35,8 @@ window.Extractor = (function () {
         </div>
         <input type="file" id="ext-har-input" accept=".har,application/json" multiple hidden>
         <ul class="extractor-har-file-list" id="ext-har-file-list"></ul>
-        <div class="extractor-panel-actions">
-          <button type="button" id="ext-har-btn" class="btn-secondary" disabled>Import</button>
-        </div>
+        <p class="error-banner" id="ext-har-error" hidden></p>
+        <p class="hint">Files here are imported automatically when you click "Share with MCP" below.</p>
       </div>
 
       <div class="card">
@@ -65,9 +64,7 @@ window.Extractor = (function () {
           <label for="ext-url-input">Page URL</label>
           <input type="url" id="ext-url-input" placeholder="https://example.com/article">
         </div>
-        <div class="extractor-panel-actions">
-          <button type="button" id="ext-scan-btn" class="btn-primary">Scan</button>
-        </div>
+        <p class="hint">Used automatically when you click "Share with MCP" below, if no HAR file is staged above.</p>
       </div>
 
       <div id="ext-status" class="hint"></div>
@@ -119,11 +116,10 @@ window.Extractor = (function () {
     const harDropzone = container.querySelector('#ext-har-dropzone');
     const harInput = container.querySelector('#ext-har-input');
     const harFileList = container.querySelector('#ext-har-file-list');
-    const harBtn = container.querySelector('#ext-har-btn');
+    const harErrorEl = container.querySelector('#ext-har-error');
     const harRedactCheckbox = container.querySelector('#ext-har-redact-checkbox');
 
     const urlInput = container.querySelector('#ext-url-input');
-    const scanBtn = container.querySelector('#ext-scan-btn');
     const inlineOnlyCheckbox = container.querySelector('#ext-inline-only-checkbox');
     const redactCheckbox = container.querySelector('#ext-redact-checkbox');
 
@@ -147,7 +143,8 @@ window.Extractor = (function () {
 
     // The last scan/import result (token + file metadata, no bodies) — what
     // "Include extracted JS/CSS" shares with MCP via the platform page's
-    // Share with Claude button.
+    // Share with Claude button, which triggers the extraction itself (see
+    // runners[container.id] below) instead of a dedicated Import/Scan button.
     let lastResult = null;
 
     function getKindFilter() {
@@ -251,7 +248,6 @@ window.Extractor = (function () {
         li.appendChild(remove);
         harFileList.appendChild(li);
       });
-      harBtn.disabled = harFiles.length === 0;
     }
 
     function addHarFiles(fileList) {
@@ -278,12 +274,12 @@ window.Extractor = (function () {
       addHarFiles(e.dataTransfer.files);
     });
 
-    harBtn.addEventListener('click', async () => {
-      if (!harFiles.length) return;
+    // ---- Extraction, run automatically by "Share with MCP" (see run() below) ----
 
-      harBtn.disabled = true;
+    async function runHarImport() {
       results.hidden = true;
       lastResult = null;
+      harErrorEl.hidden = true;
       let token = null;
 
       try {
@@ -304,11 +300,9 @@ window.Extractor = (function () {
           try {
             data = await res.json();
           } catch {
-            throw new Error(
-              `"${file.name}" is too large to import on this server (there's a request size limit per file, ` +
-              `commonly a few MB on serverless hosting). In Chrome, filter the Network tab to JS/CSS before ` +
-              `"Save all as HAR with content" to shrink the export, or split it into smaller captures.`
-            );
+            harErrorEl.textContent = `"${file.name}" is too large to import automatically. Upload it directly in the chat with Claude instead.`;
+            harErrorEl.hidden = false;
+            throw new Error('Import failed — see the message above.');
           }
           if (!res.ok) throw new Error(data.error || 'Unknown error');
 
@@ -317,18 +311,15 @@ window.Extractor = (function () {
           renderResults(data);
         }
         setStatus(harFiles.length > 1 ? `${harFiles.length} HAR files imported and merged.` : 'HAR imported successfully.');
+        return lastResult;
       } catch (err) {
         setStatus(err.message, true);
-      } finally {
-        harBtn.disabled = harFiles.length === 0;
+        return null;
       }
-    });
+    }
 
-    scanBtn.addEventListener('click', async () => {
+    async function runUrlScan() {
       const url = urlInput.value.trim();
-      if (!url) return;
-
-      scanBtn.disabled = true;
       results.hidden = true;
       lastResult = null;
       setStatus('Scanning… this can take a few seconds if there are many files.');
@@ -350,19 +341,25 @@ window.Extractor = (function () {
         lastResult = data;
         renderResults(data);
         setStatus('Scan complete.');
+        return lastResult;
       } catch (err) {
         setStatus(err.message, true);
-      } finally {
-        scanBtn.disabled = false;
+        return null;
       }
-    });
+    }
 
-    getters[container.id] = () => lastResult;
+    runners[container.id] = async () => {
+      if (harFiles.length) return runHarImport();
+      if (urlInput.value.trim()) return runUrlScan();
+      setStatus('Nothing to extract yet — add a .har file or enter a URL above.');
+      return null;
+    };
 
     resetters[container.id] = () => {
       harFiles = [];
       renderHarFileList();
       harRedactCheckbox.checked = true;
+      harErrorEl.hidden = true;
       urlInput.value = '';
       inlineOnlyCheckbox.checked = true;
       redactCheckbox.checked = true;
@@ -373,13 +370,16 @@ window.Extractor = (function () {
     };
   }
 
-  function getLastResult(containerId) {
-    return getters[containerId] ? getters[containerId]() : null;
+  // Runs the staged HAR import (or URL scan, if no HAR file is staged) and
+  // returns its result — called by the platform page's "Share with MCP"
+  // button instead of a dedicated Import/Scan button in this section.
+  function run(containerId) {
+    return runners[containerId] ? runners[containerId]() : Promise.resolve(null);
   }
 
   function resetAll(containerId) {
     if (resetters[containerId]) resetters[containerId]();
   }
 
-  return { mount, getLastResult, resetAll };
+  return { mount, run, resetAll };
 })();

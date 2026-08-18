@@ -117,8 +117,10 @@
 
         const includeExtractorCheckbox = document.getElementById('chat-include-extractor');
         if (includeExtractorCheckbox && includeExtractorCheckbox.checked && window.Extractor) {
-          const extracted = Extractor.getLastResult(includeExtractorCheckbox.dataset.storageKey);
+          shareMcpButton.textContent = 'Extracting JS/CSS...';
+          const extracted = await Extractor.run(includeExtractorCheckbox.dataset.storageKey);
           if (extracted) payload.extractedAssets = extracted;
+          shareMcpButton.textContent = 'Sharing...';
         }
 
         const res = await fetch(`/api/${PLATFORM}/context`, {
