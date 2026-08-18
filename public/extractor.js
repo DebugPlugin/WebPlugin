@@ -20,6 +20,11 @@ window.Extractor = (function () {
           select or drop several .har files at once (e.g. from different pages of the same
           site) and they'll be merged into one result.
         </p>
+        <p class="hint">
+          Tip: for a large capture, filter the Network tab to <strong>JS</strong>/<strong>CSS</strong>
+          before exporting — Chrome's "Save all as HAR" only exports the currently filtered rows,
+          which keeps the file well under this server's per-file upload limit.
+        </p>
         <p class="privacy-warning">⚠️ A HAR captures real browser traffic — don't import or share one from a session with confidential data you don't want exposed. Redaction below is heuristic, not a guarantee.</p>
         <label class="checkbox-row">
           <input type="checkbox" id="ext-har-redact-checkbox" checked>
@@ -279,18 +284,38 @@ window.Extractor = (function () {
       harBtn.disabled = true;
       results.hidden = true;
       lastResult = null;
-      setStatus(harFiles.length > 1 ? `Importing ${harFiles.length} HAR files…` : 'Importing HAR…');
+      let token = null;
 
       try {
-        const fd = new FormData();
-        harFiles.forEach((file) => fd.append('har', file));
-        fd.append('redact', harRedactCheckbox.checked ? 'true' : 'false');
-        const res = await fetch('/api/extractor/import-har', { method: 'POST', body: fd });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error || 'Unknown error');
+        // One HAR per request, chained by token, instead of bundling them into a
+        // single upload — a combined multi-file body can exceed this host's request
+        // size limit even when each file individually would fit.
+        for (let i = 0; i < harFiles.length; i++) {
+          const file = harFiles[i];
+          setStatus(harFiles.length > 1 ? `Importing ${i + 1}/${harFiles.length}: ${file.name}…` : 'Importing HAR…');
 
-        lastResult = data;
-        renderResults(data);
+          const fd = new FormData();
+          fd.append('har', file);
+          fd.append('redact', harRedactCheckbox.checked ? 'true' : 'false');
+          if (token) fd.append('token', token);
+
+          const res = await fetch('/api/extractor/import-har', { method: 'POST', body: fd });
+          let data;
+          try {
+            data = await res.json();
+          } catch {
+            throw new Error(
+              `"${file.name}" is too large to import on this server (there's a request size limit per file, ` +
+              `commonly a few MB on serverless hosting). In Chrome, filter the Network tab to JS/CSS before ` +
+              `"Save all as HAR with content" to shrink the export, or split it into smaller captures.`
+            );
+          }
+          if (!res.ok) throw new Error(data.error || 'Unknown error');
+
+          token = data.token;
+          lastResult = data;
+          renderResults(data);
+        }
         setStatus(harFiles.length > 1 ? `${harFiles.length} HAR files imported and merged.` : 'HAR imported successfully.');
       } catch (err) {
         setStatus(err.message, true);
