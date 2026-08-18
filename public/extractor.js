@@ -12,18 +12,19 @@ window.Extractor = (function () {
   function mount(container) {
     container.innerHTML = `
       <div class="card">
-        <h2>Import HAR — exact (recommended)</h2>
+        <h2>Import HAR — exact</h2>
         <p class="hint">
           In Chrome: open the page → DevTools → <strong>Network</strong> tab → reload →
           right-click the request list → <strong>"Save all as HAR with content"</strong>. Upload that
-          file here — it's exactly what the browser really requested, nothing guessed. You can
-          select or drop several .har files at once (e.g. from different pages of the same
-          site) and they'll be merged into one result.
+          file here — it's exactly what the browser really requested, nothing guessed, including
+          inline &lt;script&gt;/&lt;style&gt; content. You can select or drop several .har files at
+          once (e.g. from different pages of the same site) and they'll be merged into one result.
         </p>
         <p class="hint">
           Tip: for a large capture, filter the Network tab to <strong>JS</strong>/<strong>CSS</strong>
           before exporting — Chrome's "Save all as HAR" only exports the currently filtered rows,
-          which keeps the file well under this server's per-file upload limit.
+          which keeps the file well under this server's per-file upload limit. Oversized files are
+          also split into smaller parts automatically.
         </p>
         <p class="privacy-warning">⚠️ A HAR captures real browser traffic — don't import or share one from a session with confidential data you don't want exposed. Redaction below is heuristic, not a guarantee.</p>
         <label class="checkbox-row">
@@ -37,34 +38,6 @@ window.Extractor = (function () {
         <ul class="extractor-har-file-list" id="ext-har-file-list"></ul>
         <p class="error-banner" id="ext-har-error" hidden></p>
         <p class="hint">Files here are imported automatically when you click "Share with MCP" below.</p>
-      </div>
-
-      <div class="card">
-        <h2>Quick URL scan — approximate</h2>
-        <p class="hint">
-          No browser: plain HTTP requests to the HTML and to each discovered JS/CSS file.
-          Doesn't execute code, so it can miss URLs that only exist at runtime (those show up
-          separately, marked as not confirmed).
-        </p>
-        <p class="privacy-warning">⚠️ Only inline HTML content is redacted below — fetched external JS/CSS files are shared and downloaded as-is.</p>
-        <label class="checkbox-row">
-          <input type="checkbox" id="ext-inline-only-checkbox" checked>
-          Inline only (JS/CSS embedded in the HTML) — a HAR already covers the rest
-        </label>
-        <label class="checkbox-row">
-          <input type="checkbox" id="ext-redact-checkbox" checked>
-          Redact sensitive data in inline content (email, tokens, cards…)
-        </label>
-        <div class="extractor-kind-filter">
-          <label><input type="radio" name="ext-kind-filter" value="all" checked> All (JS + CSS)</label>
-          <label><input type="radio" name="ext-kind-filter" value="js"> JS only</label>
-          <label><input type="radio" name="ext-kind-filter" value="css"> CSS only</label>
-        </div>
-        <div class="field-row">
-          <label for="ext-url-input">Page URL</label>
-          <input type="url" id="ext-url-input" placeholder="https://example.com/article">
-        </div>
-        <p class="hint">Used automatically when you click "Share with MCP" below, if no HAR file is staged above.</p>
       </div>
 
       <div id="ext-status" class="hint"></div>
@@ -108,11 +81,7 @@ window.Extractor = (function () {
         </section>
       </div>
 
-      <p class="hint">
-        Only scan/import URLs you're authorized to inspect. In scan mode, some sites with
-        anti-bot protection may still block the initial request — this tool doesn't try to
-        evade such protections.
-      </p>
+      <p class="hint">Only import a HAR from a session you're authorized to inspect.</p>
     `;
 
     const statusEl = container.querySelector('#ext-status');
@@ -124,10 +93,6 @@ window.Extractor = (function () {
     const harFileList = container.querySelector('#ext-har-file-list');
     const harErrorEl = container.querySelector('#ext-har-error');
     const harRedactCheckbox = container.querySelector('#ext-har-redact-checkbox');
-
-    const urlInput = container.querySelector('#ext-url-input');
-    const inlineOnlyCheckbox = container.querySelector('#ext-inline-only-checkbox');
-    const redactCheckbox = container.querySelector('#ext-redact-checkbox');
 
     const downloadJsBtn = container.querySelector('#ext-download-js-btn');
     const downloadCssBtn = container.querySelector('#ext-download-css-btn');
@@ -151,16 +116,11 @@ window.Extractor = (function () {
     const cssCountPill = container.querySelector('#ext-css-count-pill');
     const cssEmpty = container.querySelector('#ext-css-empty');
 
-    // The last scan/import result (token + file metadata, no bodies) — what
+    // The last import result (token + file metadata, no bodies) — what
     // "Include extracted JS/CSS" shares with MCP via the platform page's
-    // Share with Claude button, which triggers the extraction itself (see
-    // runners[container.id] below) instead of a dedicated Import/Scan button.
+    // Share with Claude button, which triggers the import itself (see
+    // runners[container.id] below) instead of a dedicated Import button.
     let lastResult = null;
-
-    function getKindFilter() {
-      const checked = container.querySelector('input[name="ext-kind-filter"]:checked');
-      return checked ? checked.value : 'all';
-    }
 
     function setStatus(msg, isError) {
       statusEl.textContent = msg;
@@ -287,7 +247,7 @@ window.Extractor = (function () {
       addHarFiles(e.dataTransfer.files);
     });
 
-    // ---- Extraction, run automatically by "Share with MCP" (see run() below) ----
+    // ---- Import, run automatically by "Share with MCP" (see run() below) ----
 
     // A HAR file this big almost always exceeds this host's per-request upload limit
     // on its own — split it into several smaller synthetic HAR files (each a subset
@@ -381,40 +341,9 @@ window.Extractor = (function () {
       }
     }
 
-    async function runUrlScan() {
-      const url = urlInput.value.trim();
-      results.hidden = true;
-      lastResult = null;
-      setStatus('Scanning… this can take a few seconds if there are many files.');
-
-      try {
-        const res = await fetch('/api/extractor/scan', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            url,
-            inlineOnly: inlineOnlyCheckbox.checked,
-            kind: getKindFilter(),
-            redact: redactCheckbox.checked,
-          }),
-        });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error || 'Unknown error');
-
-        lastResult = data;
-        renderResults(data);
-        setStatus('Scan complete.');
-        return lastResult;
-      } catch (err) {
-        setStatus(err.message, true);
-        return null;
-      }
-    }
-
     runners[container.id] = async () => {
       if (harFiles.length) return runHarImport();
-      if (urlInput.value.trim()) return runUrlScan();
-      setStatus('Nothing to extract yet — add a .har file or enter a URL above.');
+      setStatus('Nothing to import yet — add a .har file above.');
       return null;
     };
 
@@ -423,19 +352,14 @@ window.Extractor = (function () {
       renderHarFileList();
       harRedactCheckbox.checked = true;
       harErrorEl.hidden = true;
-      urlInput.value = '';
-      inlineOnlyCheckbox.checked = true;
-      redactCheckbox.checked = true;
-      container.querySelector('input[name="ext-kind-filter"][value="all"]').checked = true;
       results.hidden = true;
       lastResult = null;
       setStatus('');
     };
   }
 
-  // Runs the staged HAR import (or URL scan, if no HAR file is staged) and
-  // returns its result — called by the platform page's "Share with MCP"
-  // button instead of a dedicated Import/Scan button in this section.
+  // Runs the staged HAR import and returns its result — called by the platform
+  // page's "Share with MCP" button instead of a dedicated Import button here.
   function run(containerId) {
     return runners[containerId] ? runners[containerId]() : Promise.resolve(null);
   }
