@@ -935,20 +935,6 @@ h1 span {
   cursor: pointer;
 }
 
-.extractor-toolbar {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  margin: 20px 0 20px;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-
-.extractor-download-group {
-  display: flex;
-  gap: 6px;
-}
-
 .extractor-kind-section {
   margin-bottom: 24px;
 }

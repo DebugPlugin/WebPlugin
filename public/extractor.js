@@ -43,14 +43,6 @@ window.Extractor = (function () {
       <div id="ext-status" class="hint"></div>
 
       <div id="ext-results" hidden>
-        <div class="extractor-toolbar">
-          <div class="extractor-download-group">
-            <button class="btn-secondary" id="ext-download-js-btn">Download JS</button>
-            <button class="btn-secondary" id="ext-download-css-btn">Download CSS</button>
-            <button class="btn-primary" id="ext-download-all-btn">Download all</button>
-          </div>
-        </div>
-
         <section class="extractor-kind-section">
           <h3>JavaScript <span class="extractor-count-pill" id="ext-js-count-pill">0</span></h3>
           <div class="hint" id="ext-js-empty" hidden></div>
@@ -91,10 +83,6 @@ window.Extractor = (function () {
     const harFileList = container.querySelector('#ext-har-file-list');
     const harErrorEl = container.querySelector('#ext-har-error');
     const harRedactCheckbox = container.querySelector('#ext-har-redact-checkbox');
-
-    const downloadJsBtn = container.querySelector('#ext-download-js-btn');
-    const downloadCssBtn = container.querySelector('#ext-download-css-btn');
-    const downloadAllBtn = container.querySelector('#ext-download-all-btn');
 
     const jsListOk = container.querySelector('#ext-js-list-ok');
     const jsOkWrap = container.querySelector('#ext-js-ok-wrap');
@@ -160,7 +148,7 @@ window.Extractor = (function () {
         okWrap.hidden = true;
         emptyNote.hidden = false;
         emptyNote.textContent = ok.length
-          ? `${ok.length} ${extLabel} downloaded, none with sensitive data redacted.`
+          ? `${ok.length} ${extLabel} confirmed, none with sensitive data redacted.`
           : `No ${extLabel} confirmed.`;
       }
       if (failed.length) {
@@ -169,31 +157,17 @@ window.Extractor = (function () {
       } else {
         failedWrap.hidden = true;
       }
-      return { okCount: ok.length };
     }
 
     function renderResults(data) {
       const jsFiles = data.files.filter((f) => f.kind === 'js');
       const cssFiles = data.files.filter((f) => f.kind === 'css');
 
-      const { okCount: okJs } = fillSection(jsFiles, jsListOk, jsOkWrap, jsOkSummary, jsListFailed, jsFailedWrap, jsFailedSummary, jsCountPill, jsEmpty, '.js');
-      const { okCount: okCss } = fillSection(cssFiles, cssListOk, cssOkWrap, cssOkSummary, cssListFailed, cssFailedWrap, cssFailedSummary, cssCountPill, cssEmpty, '.css');
-
-      downloadJsBtn.disabled = !okJs;
-      downloadCssBtn.disabled = !okCss;
-      downloadAllBtn.disabled = !okJs && !okCss;
+      fillSection(jsFiles, jsListOk, jsOkWrap, jsOkSummary, jsListFailed, jsFailedWrap, jsFailedSummary, jsCountPill, jsEmpty, '.js');
+      fillSection(cssFiles, cssListOk, cssOkWrap, cssOkSummary, cssListFailed, cssFailedWrap, cssFailedSummary, cssCountPill, cssEmpty, '.css');
 
       results.hidden = false;
     }
-
-    function download(kind) {
-      if (!lastResult) return;
-      const q = kind === 'all' ? '' : `?kind=${kind}`;
-      window.location.href = `/api/extractor/download/${lastResult.token}${q}`;
-    }
-    downloadJsBtn.addEventListener('click', () => download('js'));
-    downloadCssBtn.addEventListener('click', () => download('css'));
-    downloadAllBtn.addEventListener('click', () => download('all'));
 
     // ---- HAR file selection: click-to-browse, drag & drop, per-file removal ----
     let harFiles = [];
