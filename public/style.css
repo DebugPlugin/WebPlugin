@@ -259,9 +259,15 @@ h1 span {
 
 .platform-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  grid-template-columns: repeat(3, 1fr);
   gap: 16px;
   margin-top: 8px;
+}
+
+@media (max-width: 560px) {
+  .platform-grid {
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  }
 }
 
 .platform-card {
