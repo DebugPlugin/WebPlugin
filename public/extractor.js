@@ -276,6 +276,50 @@ window.Extractor = (function () {
 
     // ---- Extraction, run automatically by "Share with MCP" (see run() below) ----
 
+    // A HAR file this big almost always exceeds this host's per-request upload limit
+    // on its own — split it into several smaller synthetic HAR files (each a subset
+    // of the original's log.entries) instead of letting the whole import fail.
+    const MAX_PART_BYTES = 4 * 1024 * 1024;
+
+    async function splitIfNeeded(file) {
+      if (file.size <= MAX_PART_BYTES) return [file];
+
+      let har;
+      try {
+        har = JSON.parse(await file.text());
+      } catch {
+        return [file]; // not valid JSON — let the server report that clearly
+      }
+      const entries = har?.log?.entries;
+      if (!Array.isArray(entries) || entries.length < 2) return [file];
+
+      const parts = [];
+      let current = [];
+      let currentSize = 40; // rough overhead for the {"log":{"version":"...","entries":[]}} wrapper
+      for (const entry of entries) {
+        const entrySize = JSON.stringify(entry).length + 1;
+        if (current.length && currentSize + entrySize > MAX_PART_BYTES) {
+          parts.push(current);
+          current = [];
+          currentSize = 40;
+        }
+        current.push(entry);
+        currentSize += entrySize;
+      }
+      if (current.length) parts.push(current);
+      if (parts.length <= 1) return [file];
+
+      const baseName = file.name.replace(/\.har$/i, '');
+      return parts.map(
+        (partEntries, i) =>
+          new File(
+            [JSON.stringify({ log: { version: har.log?.version || '1.2', entries: partEntries } })],
+            `${baseName}.part${i + 1}of${parts.length}.har`,
+            { type: 'application/json' }
+          )
+      );
+    }
+
     async function runHarImport() {
       results.hidden = true;
       lastResult = null;
@@ -283,12 +327,18 @@ window.Extractor = (function () {
       let token = null;
 
       try {
+        setStatus('Preparing files…');
+        const parts = [];
+        for (const file of harFiles) {
+          parts.push(...(await splitIfNeeded(file)));
+        }
+
         // One HAR per request, chained by token, instead of bundling them into a
         // single upload — a combined multi-file body can exceed this host's request
         // size limit even when each file individually would fit.
-        for (let i = 0; i < harFiles.length; i++) {
-          const file = harFiles[i];
-          setStatus(harFiles.length > 1 ? `Importing ${i + 1}/${harFiles.length}: ${file.name}…` : 'Importing HAR…');
+        for (let i = 0; i < parts.length; i++) {
+          const file = parts[i];
+          setStatus(parts.length > 1 ? `Importing ${i + 1}/${parts.length}: ${file.name}…` : 'Importing HAR…');
 
           const fd = new FormData();
           fd.append('har', file);
@@ -300,7 +350,7 @@ window.Extractor = (function () {
           try {
             data = await res.json();
           } catch {
-            harErrorEl.textContent = `"${file.name}" is too large to import automatically. Upload it directly in the chat with Claude instead.`;
+            harErrorEl.textContent = `"${file.name}" is too large to import automatically, even after splitting. Upload it directly in the chat with Claude instead.`;
             harErrorEl.hidden = false;
             throw new Error('Import failed — see the message above.');
           }
@@ -310,7 +360,7 @@ window.Extractor = (function () {
           lastResult = data;
           renderResults(data);
         }
-        setStatus(harFiles.length > 1 ? `${harFiles.length} HAR files imported and merged.` : 'HAR imported successfully.');
+        setStatus(parts.length > 1 ? `${parts.length} part(s) imported and merged.` : 'HAR imported successfully.');
         return lastResult;
       } catch (err) {
         setStatus(err.message, true);
