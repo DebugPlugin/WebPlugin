@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Others — DPE</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <div class="page page-wide">
+    <div class="hero">
+      <a class="back-link" href="/">← All platforms</a>
+      <div class="hero-title-row">
+        <div class="icon" style="background:#4B5563"><img src="/icons/others.svg" alt=""></div>
+        <h1>Others</h1>
+      </div>
+      <p class="subtitle brand-subtitle">D<span class="oo">OO</span>FINDER <span class="pe">Plugin Explorer</span></p>
+    </div>
+    <p class="hint">For platforms without a dedicated page — no plugin source and no store-specific API tooling, just the shared JS/CSS extractor plus Notes and Screenshots.</p>
+
+    <div class="page-columns">
+      <div class="page-col">
+        <div class="card">
+          <h2>Share with Claude (MCP)</h2>
+          <p class="hint">Shares screenshots and notes with Claude Desktop/claude.ai.</p>
+          <label class="checkbox-row">
+            <input type="checkbox" id="chat-include-screenshots" data-storage-key="others-screenshots" checked>
+            Include screenshots (from the Screenshots section)
+          </label>
+          <label class="checkbox-row">
+            <input type="checkbox" id="chat-include-notes" data-storage-key="others-notes" checked>
+            Include notes (from the Notes section)
+          </label>
+          <button type="button" id="chat-share-mcp" class="btn-secondary">📤 Share with MCP</button>
+          <div class="response-box" style="margin-top: 14px;"><pre id="shared-mcp-status">Loading...</pre></div>
+          <button type="button" id="shared-mcp-reset" class="btn-secondary">Reset shared data</button>
+        </div>
+
+        <div class="card">
+          <h2>Reset browser data</h2>
+          <p class="hint">Clears data saved locally in this browser (separate from "Shared with MCP" above).</p>
+          <label class="checkbox-row"><input type="checkbox" id="reset-notes" checked> Notes</label>
+          <label class="checkbox-row"><input type="checkbox" id="reset-screenshots" checked> Screenshots</label>
+          <button type="button" id="btn-reset-local" class="btn-secondary">Reset selected</button>
+        </div>
+      </div>
+
+      <div class="page-col">
+        <button class="section-toggle open" id="others-section-extractor-toggle" type="button" data-target="others-section-extractor-body">
+          <span>JS/CSS Extractor</span>
+          <span class="section-chevron">▼</span>
+        </button>
+        <div class="section-body open" id="others-section-extractor-body">
+          <div id="others-extractor"></div>
+        </div>
+
+        <button class="section-toggle" id="others-section-notes-toggle" type="button" data-target="others-section-notes-body">
+          <span>Notes</span>
+          <span class="section-chevron">▼</span>
+        </button>
+        <div class="section-body" id="others-section-notes-body">
+          <div class="card">
+            <h2>Notes</h2>
+            <p class="hint">Free text — saved automatically in this browser.</p>
+            <p class="privacy-warning">⚠️ Do not include confidential data (tokens, order/customer data, etc.).</p>
+            <textarea id="others-notes" class="notes-textarea" data-storage-key="others-notes" placeholder="Write anything here..."></textarea>
+          </div>
+        </div>
+
+        <button class="section-toggle" id="others-section-screenshots-toggle" type="button" data-target="others-section-screenshots-body">
+          <span>Screenshots</span>
+          <span class="section-chevron">▼</span>
+        </button>
+        <div class="section-body" id="others-section-screenshots-body">
+          <div class="card">
+            <h2>Screenshots</h2>
+            <p class="hint">Up to 8 images, saved in this browser.</p>
+            <p class="privacy-warning">⚠️ Do not include confidential data (tokens, order/customer data, etc.).</p>
+            <div id="others-screenshots" class="screenshot-grid"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>window.PLATFORM = 'others';</script>
+  <script src="/platform.js"></script>
+  <script src="/notes.js"></script>
+  <script src="/screenshots.js"></script>
+  <script>Screenshots.mount(document.getElementById('others-screenshots'), 'others-screenshots');</script>
+  <script src="/extractor.js"></script>
+  <script>Extractor.mount(document.getElementById('others-extractor'));</script>
+</body>
+</html>

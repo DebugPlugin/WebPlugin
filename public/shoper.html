@@ -81,6 +81,14 @@
           </div>
         </div>
 
+        <button class="section-toggle" id="shoper-section-extractor-toggle" type="button" data-target="shoper-section-extractor-body">
+          <span>JS/CSS Extractor</span>
+          <span class="section-chevron">▼</span>
+        </button>
+        <div class="section-body" id="shoper-section-extractor-body">
+          <div id="shoper-extractor"></div>
+        </div>
+
         <button class="section-toggle" id="shoper-section-notes-toggle" type="button" data-target="shoper-section-notes-body">
           <span>Notes</span>
           <span class="section-chevron">▼</span>
@@ -117,5 +125,7 @@
   <script src="/notes.js"></script>
   <script src="/screenshots.js"></script>
   <script>Screenshots.mount(document.getElementById('shoper-screenshots'), 'shoper-screenshots');</script>
+  <script src="/extractor.js"></script>
+  <script>Extractor.mount(document.getElementById('shoper-extractor'));</script>
 </body>
 </html>

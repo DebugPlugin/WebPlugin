@@ -85,6 +85,14 @@
           </div>
         </div>
 
+        <button class="section-toggle" id="shopify-section-extractor-toggle" type="button" data-target="shopify-section-extractor-body">
+          <span>JS/CSS Extractor</span>
+          <span class="section-chevron">▼</span>
+        </button>
+        <div class="section-body" id="shopify-section-extractor-body">
+          <div id="shopify-extractor"></div>
+        </div>
+
         <button class="section-toggle" id="shopify-section-notes-toggle" type="button" data-target="shopify-section-notes-body">
           <span>Notes</span>
           <span class="section-chevron">▼</span>
@@ -121,5 +129,7 @@
   <script src="/notes.js"></script>
   <script src="/screenshots.js"></script>
   <script>Screenshots.mount(document.getElementById('shopify-screenshots'), 'shopify-screenshots');</script>
+  <script src="/extractor.js"></script>
+  <script>Extractor.mount(document.getElementById('shopify-extractor'));</script>
 </body>
 </html>

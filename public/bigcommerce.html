@@ -89,6 +89,14 @@
           </div>
         </div>
 
+        <button class="section-toggle" id="bc-section-extractor-toggle" type="button" data-target="bc-section-extractor-body">
+          <span>JS/CSS Extractor</span>
+          <span class="section-chevron">▼</span>
+        </button>
+        <div class="section-body" id="bc-section-extractor-body">
+          <div id="bc-extractor"></div>
+        </div>
+
         <button class="section-toggle" id="bc-section-notes-toggle" type="button" data-target="bc-section-notes-body">
           <span>Notes</span>
           <span class="section-chevron">▼</span>
@@ -125,5 +133,7 @@
   <script src="/notes.js"></script>
   <script src="/screenshots.js"></script>
   <script>Screenshots.mount(document.getElementById('bc-screenshots'), 'bc-screenshots');</script>
+  <script src="/extractor.js"></script>
+  <script>Extractor.mount(document.getElementById('bc-extractor'));</script>
 </body>
 </html>

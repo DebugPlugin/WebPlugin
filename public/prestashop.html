@@ -60,6 +60,14 @@
           <button type="button" id="btn-reset-local" class="btn-secondary">Reset selected</button>
         </div>
 
+        <button class="section-toggle" id="ps-section-extractor-toggle" type="button" data-target="ps-section-extractor-body">
+          <span>JS/CSS Extractor</span>
+          <span class="section-chevron">▼</span>
+        </button>
+        <div class="section-body" id="ps-section-extractor-body">
+          <div id="ps-extractor"></div>
+        </div>
+
         <button class="section-toggle" id="ps-section-notes-toggle" type="button" data-target="ps-section-notes-body">
           <span>Notes</span>
           <span class="section-chevron">▼</span>
@@ -119,5 +127,7 @@
   <script src="/notes.js"></script>
   <script src="/screenshots.js"></script>
   <script>Screenshots.mount(document.getElementById('ps-screenshots'), 'ps-screenshots');</script>
+  <script src="/extractor.js"></script>
+  <script>Extractor.mount(document.getElementById('ps-extractor'));</script>
 </body>
 </html>

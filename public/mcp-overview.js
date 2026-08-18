@@ -19,6 +19,7 @@
     { key: 'shoper', label: 'Shoper' },
     { key: 'shopify', label: 'Shopify' },
     { key: 'bigcommerce', label: 'BigCommerce' },
+    { key: 'others', label: 'Others' },
   ];
 
   function escapeHtml(s) {

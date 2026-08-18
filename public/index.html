@@ -13,6 +13,7 @@
       <div class="hero-title-row">
         <div class="doofinder-logo">D<span class="oo">OO</span>FINDER</div>
         <h1><span>Plugin Explorer</span></h1>
+        <button type="button" id="logout-btn" class="btn-secondary" style="margin-left: auto;">Logout</button>
       </div>
       <p class="subtitle">Choose a platform and debug</p>
     </div>
@@ -50,6 +51,10 @@
         <div class="icon" style="background:#121118"><img src="/icons/bigcommerce.svg" alt=""></div>
         <div class="name">BigCommerce</div>
       </a>
+      <a class="platform-card" href="/others.html">
+        <div class="icon" style="background:#4B5563"><img src="/icons/others.svg" alt=""></div>
+        <div class="name">Others</div>
+      </a>
     </div>
 
     <button class="section-toggle" id="mcp-overview-toggle" type="button" data-target="mcp-overview-body" style="margin-top: 24px;">
@@ -66,5 +71,14 @@
   </div>
 
   <script src="/mcp-overview.js"></script>
+  <script>
+    document.getElementById('logout-btn').addEventListener('click', async () => {
+      try {
+        await fetch('/api/logout', { method: 'POST' });
+      } finally {
+        window.location.href = '/login';
+      }
+    });
+  </script>
 </body>
 </html>

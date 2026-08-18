@@ -86,6 +86,14 @@
           </div>
         </div>
 
+        <button class="section-toggle" id="sw5-section-extractor-toggle" type="button" data-target="sw5-section-extractor-body">
+          <span>JS/CSS Extractor</span>
+          <span class="section-chevron">▼</span>
+        </button>
+        <div class="section-body" id="sw5-section-extractor-body">
+          <div id="sw5-extractor"></div>
+        </div>
+
         <button class="section-toggle" id="sw5-section-notes-toggle" type="button" data-target="sw5-section-notes-body">
           <span>Notes</span>
           <span class="section-chevron">▼</span>
@@ -122,5 +130,7 @@
   <script src="/notes.js"></script>
   <script src="/screenshots.js"></script>
   <script>Screenshots.mount(document.getElementById('sw5-screenshots'), 'sw5-screenshots');</script>
+  <script src="/extractor.js"></script>
+  <script>Extractor.mount(document.getElementById('sw5-extractor'));</script>
 </body>
 </html>
