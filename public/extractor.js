@@ -235,12 +235,24 @@ window.Extractor = (function () {
         return [file]; // not valid JSON — let the server report that clearly
       }
       const entries = har?.log?.entries;
-      if (!Array.isArray(entries) || entries.length < 2) return [file];
+      if (!Array.isArray(entries) || !entries.length) return [file];
+
+      // A single entry whose own embedded body already exceeds the part limit
+      // (e.g. a multi-MB third-party bundle like Font Awesome's all.min.js)
+      // can't be split further without corrupting it. Strip just that body —
+      // the server's existing fallback re-fetches the file live from its real
+      // URL for anything with no embedded content, and that outbound request
+      // isn't constrained by this upload's size limit at all. The file is
+      // still imported, just not from the frozen HAR snapshot.
+      const trimmed = entries.map((entry) => {
+        if (JSON.stringify(entry).length <= MAX_PART_BYTES) return entry;
+        return { ...entry, response: { ...entry.response, content: { mimeType: entry.response?.content?.mimeType } } };
+      });
 
       const parts = [];
       let current = [];
       let currentSize = 40; // rough overhead for the {"log":{"version":"...","entries":[]}} wrapper
-      for (const entry of entries) {
+      for (const entry of trimmed) {
         const entrySize = JSON.stringify(entry).length + 1;
         if (current.length && currentSize + entrySize > MAX_PART_BYTES) {
           parts.push(current);
@@ -251,14 +263,13 @@ window.Extractor = (function () {
         currentSize += entrySize;
       }
       if (current.length) parts.push(current);
-      if (parts.length <= 1) return [file];
 
       const baseName = file.name.replace(/\.har$/i, '');
       return parts.map(
         (partEntries, i) =>
           new File(
             [JSON.stringify({ log: { version: har.log?.version || '1.2', entries: partEntries } })],
-            `${baseName}.part${i + 1}of${parts.length}.har`,
+            parts.length > 1 ? `${baseName}.part${i + 1}of${parts.length}.har` : `${baseName}.har`,
             { type: 'application/json' }
           )
       );
