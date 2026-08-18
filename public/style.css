@@ -383,13 +383,13 @@ h1 span {
 }
 
 .hero .btn-secondary {
-  color: var(--yellow);
+  color: var(--ink);
   border-color: var(--yellow);
-  background: transparent;
+  background: var(--yellow);
 }
 
 .hero .btn-secondary:hover {
-  background: rgba(255, 240, 49, 0.12);
+  background: var(--yellow-hover);
 }
 
 .platform-card .name {
