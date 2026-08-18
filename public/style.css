@@ -80,7 +80,7 @@ h1 span {
 .card h2 {
   font-size: 13px;
   font-weight: 700;
-  color: var(--brand);
+  color: var(--text);
   text-transform: uppercase;
   letter-spacing: 0.05em;
   margin-bottom: 4px;
@@ -645,7 +645,7 @@ h1 span {
 .accordion-title {
   font-size: 13px;
   font-weight: 700;
-  color: var(--brand);
+  color: var(--text);
   text-transform: uppercase;
   letter-spacing: 0.05em;
 }
@@ -743,7 +743,7 @@ h1 span {
 .btn-curl {
   padding: 9px 12px;
   background: transparent;
-  color: var(--brand);
+  color: var(--text);
   border: 1.5px solid var(--brand);
   border-radius: 6px;
   font-size: 13px;
@@ -796,7 +796,7 @@ h1 span {
   margin-top: 8px;
   padding: 7px;
   background: transparent;
-  color: var(--brand);
+  color: var(--text);
   border: 1.5px solid var(--brand);
   border-radius: 6px;
   font-size: 13px;
@@ -951,7 +951,7 @@ h1 span {
   font-size: 13px;
   font-weight: 700;
   margin: 0 0 8px;
-  color: var(--brand);
+  color: var(--text);
   text-transform: uppercase;
   letter-spacing: 0.04em;
   display: flex;
