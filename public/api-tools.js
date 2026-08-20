@@ -1,12 +1,13 @@
 window.ApiTools = (function () {
-  let lastResponse = null;
+  const MAX_HISTORY = 20;
+  let history = [];
 
-  function getLastResponse() {
-    return lastResponse;
+  function getHistory() {
+    return history;
   }
 
   function reset() {
-    lastResponse = null;
+    history = [];
     document.querySelectorAll('[id^="response-box-"]').forEach((el) => el.classList.add("hidden"));
     document.querySelectorAll('[id^="status-badge-"]').forEach((el) => el.classList.add("hidden"));
     document.querySelectorAll('[id^="time-taken-"]').forEach((el) => el.classList.add("hidden"));
@@ -162,14 +163,15 @@ window.ApiTools = (function () {
           time.classList.remove("hidden");
           box.classList.remove("hidden");
           btnCopy.classList.remove("hidden");
-          lastResponse = {
+          history.push({
             title: ep.title,
             method: method || "GET",
             url,
             headers: digest ? { Authorization: "[redacted — Digest]" } : redactHeaders(headers),
             status: res.status,
             json: pretty,
-          };
+          });
+          if (history.length > MAX_HISTORY) history.shift();
           btnCopy.onclick = () => {
             navigator.clipboard.writeText(raw).then(() => {
               btnCopy.textContent = "✓ Copied!";
@@ -221,5 +223,5 @@ window.ApiTools = (function () {
     });
   }
 
-  return { normalizeUrl, basicAuth, callProxy, mount, getLastResponse, reset };
+  return { normalizeUrl, basicAuth, callProxy, mount, getHistory, reset };
 })();

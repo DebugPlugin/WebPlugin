@@ -53,8 +53,11 @@
           return `<tr><td>${escapeHtml(label)}</td><td colspan="6" style="color: var(--text-faint);">Nothing shared yet.</td></tr>`;
         }
         const version = ctx.includeCode ? escapeHtml(ctx.selectedVersion || '—') : 'not shared';
-        const apiCall = ctx.apiCall
-          ? `${escapeHtml(ctx.apiCall.method)} ${escapeHtml(ctx.apiCall.url)} <span style="color: var(--text-muted);">(HTTP ${escapeHtml(ctx.apiCall.status)})</span>`
+        const calls = Array.isArray(ctx.apiCalls) ? ctx.apiCalls : [];
+        const last = calls[calls.length - 1];
+        const apiCall = last
+          ? `${escapeHtml(last.method)} ${escapeHtml(last.url)} <span style="color: var(--text-muted);">(HTTP ${escapeHtml(last.status)})</span>` +
+            (calls.length > 1 ? ` <span style="color: var(--text-muted);">+${calls.length - 1} more</span>` : '')
           : '—';
         const screenshots = ctx.screenshotCount || 0;
         const notes = ctx.notes ? 'Yes' : 'No';
@@ -79,7 +82,7 @@
             <tr>
               <th>Platform</th>
               <th>Version</th>
-              <th>Last API call</th>
+              <th>API calls</th>
               <th>Screenshots</th>
               <th>Notes</th>
               <th>JS/CSS</th>

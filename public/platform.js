@@ -72,8 +72,8 @@
     updateChatHeading();
   }
 
-  // ---------- Share API call / screenshots with MCP ----------
-  // Pushes the current data to the server so the MCP tools get_last_api_call and
+  // ---------- Share API calls / screenshots with MCP ----------
+  // Pushes the current data to the server so the MCP tools get_api_calls and
   // get_screenshots (used by e.g. Claude Desktop) can read it. Shared per platform,
   // not private — see NOTA in chat about this.
   const shareMcpButton = document.getElementById('chat-share-mcp');
@@ -98,10 +98,10 @@
         const includeCodeCheckbox = document.getElementById('chat-include-code');
         const payload = { selectedVersion: tag, includeCode: includeCodeCheckbox ? includeCodeCheckbox.checked : false };
 
-        const wantsApiCall = (includeApiCallCheckbox && includeApiCallCheckbox.checked) || (includeApiJsonCheckbox && includeApiJsonCheckbox.checked);
-        if (wantsApiCall && window.ApiTools) {
-          const last = ApiTools.getLastResponse();
-          if (last) payload.apiCall = last;
+        const wantsApiCalls = (includeApiCallCheckbox && includeApiCallCheckbox.checked) || (includeApiJsonCheckbox && includeApiJsonCheckbox.checked);
+        if (wantsApiCalls && window.ApiTools) {
+          const calls = ApiTools.getHistory();
+          if (calls.length) payload.apiCalls = calls;
         }
 
         if (includeScreenshotsCheckbox && includeScreenshotsCheckbox.checked && window.Screenshots) {
@@ -152,11 +152,15 @@
         fetch('/api/redis-usage').then(r => r.json()).catch(() => ({ available: false }))
       ]);
 
+      const apiCallLines = Array.isArray(ctx.apiCalls) && ctx.apiCalls.length
+        ? [`API calls: ${ctx.apiCalls.length}`, ...ctx.apiCalls.map(c => `  - ${c.method} ${c.url} (HTTP ${c.status})`)]
+        : ['API calls: —'];
+
       const lines = ctx.savedAt
         ? [
             `Shared at: ${new Date(ctx.savedAt).toLocaleString()}`,
             `Selected version: ${ctx.includeCode ? (ctx.selectedVersion || '—') : 'not shared'}`,
-            `API call: ${ctx.apiCall ? `${ctx.apiCall.method} ${ctx.apiCall.url} (HTTP ${ctx.apiCall.status})` : '—'}`,
+            ...apiCallLines,
             `Screenshots: ${ctx.screenshotCount}`,
             `Notes: ${ctx.notes ? 1 : 0}`,
             `Extracted JS/CSS: ${ctx.extractedAssetsCount || 0}`
